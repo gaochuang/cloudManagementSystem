@@ -17,14 +17,8 @@ var (
 func main() {
 
 	_ = signals.SetupSignalHandler()
-	//delete gin.log
-	_ = os.Remove(log)
 
-	file, err := os.Create(log)
-	if err != nil {
-		panic(err.Error())
-	}
-
+	file := createGinLog()
 	initConfig()
 	//write log to file and console
 	gin.DefaultWriter = io.MultiWriter(file, os.Stdout)
@@ -34,4 +28,14 @@ func main() {
 func initConfig() {
 	common.VIPER = tool.Viper()
 	common.LOG = tool.Zap()
+}
+
+func createGinLog() *os.File {
+	//delete gin.log
+	_ = os.Remove(log)
+	file, err := os.Create(log)
+	if err != nil {
+		panic(err.Error())
+	}
+	return file
 }
