@@ -28,7 +28,6 @@ func main() {
 	initConfig()
 	//write log to file and console
 	gin.DefaultWriter = io.MultiWriter(file, os.Stdout)
-
 	server.InitServer()
 }
 
