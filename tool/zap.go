@@ -65,7 +65,7 @@ func getEncoderCore() (core zapcore.Core) {
 func getWriteSyncer() (zapcore.WriteSyncer, error) {
 	fileWriter, err := rotatelogs.New(path.Join(common.CONFIG.Zap.Director, "%Y-%m-%d.log"),
 		rotatelogs.WithMaxAge(7*24*time.Hour),
-		rotatelogs.WithRotationTime(8*time.Hour),
+		rotatelogs.WithRotationTime(24*time.Hour),
 		rotatelogs.WithLinkName(common.CONFIG.Zap.LinkName),
 	)
 

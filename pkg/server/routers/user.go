@@ -21,6 +21,5 @@ func User(group *gin.RouterGroup) {
 		user.POST("/register", func(context *gin.Context) {
 			context.String(500, "don't support")
 		})
-
 	}
 }
