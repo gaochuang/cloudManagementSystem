@@ -11,3 +11,10 @@ zap:
   show-line: true
   encode-level: 'CapitalLevelEncoder'
   log-in-console: true
+
+# mysql configuration
+mysql:
+  path: '127.0.0.1:3306'
+  db-name: 'cluster'
+  username: 'root'
+  password: '123456'
