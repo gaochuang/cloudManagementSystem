@@ -23,11 +23,17 @@ func main() {
 	//write log to file and console
 	gin.DefaultWriter = io.MultiWriter(file, os.Stdout)
 	server.InitServer()
+
+	defer func() {
+		db, _ := common.DB.DB()
+		db.Close()
+	}()
 }
 
 func initConfig() {
 	common.VIPER = tool.Viper()
 	common.LOG = tool.Zap()
+	common.DB = tool.GormMysql()
 }
 
 func createGinLog() *os.File {
