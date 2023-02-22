@@ -19,7 +19,12 @@ func main() {
 	_ = signals.SetupSignalHandler()
 
 	file := createGinLog()
+
+	//init config
 	initConfig()
+
+	//init sql table
+	common.MysqlTable(common.DB)
 	//write log to file and console
 	gin.DefaultWriter = io.MultiWriter(file, os.Stdout)
 	server.InitServer()
