@@ -7,7 +7,7 @@ import (
 
 type Mysql struct {
 	Addr     string `mapstructure:"addr" json:"addr" yaml:"addr"`
-	DBName   string `mapstructure:"dbname" json:"dbname" yaml:"dbname"`
+	DBName   string `mapstructure:"db-name" json:"db-name" yaml:"db-name"`
 	UserName string `mapstructure:"username" json:"username" yaml:"username"`
 	Password string `mapstructure:"Password" json:"Password" yaml:"password"`
 	Config   string `mapstructure:"config" json:"config" yaml:"config"`
