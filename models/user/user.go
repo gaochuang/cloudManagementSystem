@@ -1,12 +1,12 @@
 package user
 
-import "gorm.io/gorm"
+import "kubernetes_management_system/models"
 
 //https://gorm.io/zh_CN/docs/models.html
 //https://gorm.io/zh_CN/docs/conventions.html
 
 type User struct {
-	gorm.Model
+	models.Mode
 	UID      string `gorm:"column:uid;comment:'user id'" json:"uid"`
 	UserName string `gorm:"column:username;comment:'user name'" json:"userName"`
 	Password string `gorm:"column:password;comment:'user password'" json:"password"`

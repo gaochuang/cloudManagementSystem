@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	router "kubernetes_management_system/pkg/server/service/user"
 )
 
 func User(group *gin.RouterGroup) {
@@ -17,9 +18,6 @@ func User(group *gin.RouterGroup) {
 
 	user := group.Group("/user")
 	{
-		//do nothing
-		user.POST("/register", func(context *gin.Context) {
-			context.String(500, "don't support")
-		})
+		user.POST("/register", router.Register)
 	}
 }
