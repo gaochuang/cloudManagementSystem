@@ -13,6 +13,8 @@ const (
 	UserRegisterFail
 	UserNameEmpty
 	UserPassEmpty
+
+	InternalServerError = http.StatusInternalServerError
 )
 
 const (
@@ -23,6 +25,7 @@ const (
 	UserRegisterErrorMsg   = "user register failed"
 	UserNameIsEmptyMsg     = "user name is empty"
 	UserPasswordIsEmptyMsg = "user password is empty"
+	InternalServerErrorMsg = "server internal error"
 )
 
 type response struct {
@@ -33,13 +36,14 @@ type response struct {
 }
 
 var customError = map[int]string{
-	SUCCESS:          OkMsg,
-	ERROR:            NoOkMsg,
-	ParamError:       ParamErrorMsg,
-	AuthError:        LoginCheckErrorMsg,
-	UserRegisterFail: UserRegisterErrorMsg,
-	UserNameEmpty:    UserNameIsEmptyMsg,
-	UserPassEmpty:    UserPasswordIsEmptyMsg,
+	SUCCESS:             OkMsg,
+	ERROR:               NoOkMsg,
+	ParamError:          ParamErrorMsg,
+	AuthError:           LoginCheckErrorMsg,
+	UserRegisterFail:    UserRegisterErrorMsg,
+	UserNameEmpty:       UserNameIsEmptyMsg,
+	UserPassEmpty:       UserPasswordIsEmptyMsg,
+	InternalServerError: InternalServerErrorMsg,
 }
 
 func ResultOk(code int, data interface{}, msg string, ctx *gin.Context) {
@@ -64,4 +68,32 @@ func ResultFail(code int, data interface{}, msg string, ctx *gin.Context) {
 			ErrMsg:  msg,
 		})
 	}
+}
+
+func Ok(c *gin.Context) {
+	ResultOk(SUCCESS, map[string]interface{}{}, "success", c)
+}
+
+func OkWithMessage(message string, c *gin.Context) {
+	ResultOk(SUCCESS, map[string]interface{}{}, message, c)
+}
+
+func OkWithData(data interface{}, c *gin.Context) {
+	ResultOk(SUCCESS, data, "success", c)
+}
+
+func OkWithDetailed(data interface{}, message string, c *gin.Context) {
+	ResultOk(SUCCESS, data, message, c)
+}
+
+func Fail(c *gin.Context) {
+	ResultFail(ERROR, map[string]interface{}{}, "failed", c)
+}
+
+func FailWithMessage(code int, message string, c *gin.Context) {
+	ResultFail(code, map[string]interface{}{}, message, c)
+}
+
+func FailWithDetailed(data interface{}, code int, message string, c *gin.Context) {
+	ResultFail(code, data, message, c)
 }
