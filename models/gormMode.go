@@ -25,13 +25,11 @@ type LocalTime struct {
 }
 
 func (t *LocalTime) UnmarshalJSON(data []byte) (err error) {
-	// ""空值不进行解析
 	if len(data) == 2 {
 		*t = LocalTime{Time: time.Time{}}
 		return
 	}
 
-	// 指定解析的格式
 	now, err := time.Parse(`"`+SecLocalTimeFormat+`"`, string(data))
 	*t = LocalTime{Time: now}
 	return
@@ -43,9 +41,6 @@ func (t LocalTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t LocalTime) Value() (driver.Value, error) {
-	/*
-		gorm 写入 mysql 时调用
-	*/
 	var zeroTime time.Time
 	if t.UnixNano() == zeroTime.UnixNano() {
 		return nil, nil
