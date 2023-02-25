@@ -1,9 +1,7 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"kubernetes_management_system/common"
 	user "kubernetes_management_system/models/user"
 	"net/http"
@@ -31,7 +29,6 @@ func AuthMiddleware() gin.HandlerFunc {
 func decodeToken(token string, ctx *gin.Context) {
 	tk, claims, err := common.ParseToken(token)
 	if err != nil || !tk.Valid {
-		common.LOG.Error(fmt.Sprintf("parse token failed %v", zap.Any("err: ", err)))
 		ctx.JSON(http.StatusUnauthorized, gin.H{"errcode": 401, "errmsg": "authorization has expired"})
 		ctx.Abort()
 		return

@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"kubernetes_management_system/models/user"
 	"time"
@@ -36,14 +35,10 @@ func ReleaseToken(user user.User) (string, error) {
 }
 
 func ParseToken(token string) (*jwt.Token, *Claims, error) {
-
-	fmt.Printf("tocke %s\n", token)
 	claims := &Claims{}
 
 	tk, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		return mySecret, nil
 	})
-
-	fmt.Printf("###tk %v \n", tk)
 	return tk, claims, err
 }
