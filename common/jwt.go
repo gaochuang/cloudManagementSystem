@@ -12,7 +12,6 @@ var mySecret = []byte("my_secret_creat")
 type Claims struct {
 	ID          uint
 	Username    string
-	Role        string
 	BufferTimer int64
 	jwt.RegisteredClaims
 }
