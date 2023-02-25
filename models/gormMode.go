@@ -20,6 +20,10 @@ type Mode struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
+func (*Mode) TableName(name string) string {
+	return fmt.Sprintf("%s", name)
+}
+
 type LocalTime struct {
 	time.Time
 }

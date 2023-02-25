@@ -20,7 +20,6 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	//用户密码加密
 	password, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MinCost)
 	user.Password = string(password)
 
@@ -33,7 +32,6 @@ func Register(ctx *gin.Context) {
 }
 
 func userRegister(u *user.User) (userInter user.User, err error) {
-
 	var user user.User
 	err = common.DB.Where("username = ? ", u.UserName).First(&user).Error
 	if err != gorm.ErrRecordNotFound {

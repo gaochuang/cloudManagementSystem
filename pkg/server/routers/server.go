@@ -17,6 +17,12 @@ func InitServer() {
 		User(publicGroup)
 	}
 
+	privateGroup := r.Group("/api/v1")
+	privateGroup.Use(middleware.AuthMiddleware())
+	{
+		InitUserInfo(privateGroup)
+	}
+
 	common.LOG.Info("server addr: " + common.CONFIG.System.Addr)
 	r.Run(common.CONFIG.System.Addr)
 }

@@ -22,3 +22,11 @@ func User(group *gin.RouterGroup) {
 		user.POST("/login", router.Login)
 	}
 }
+
+func InitUserInfo(group *gin.RouterGroup) {
+	routerGroup := group.Group("user")
+	{
+		routerGroup.GET("info", router.UserInfo)
+	}
+
+}
