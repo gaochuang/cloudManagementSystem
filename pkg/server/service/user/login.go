@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
@@ -38,7 +39,14 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	response.Ok(ctx)
+	token, err := common.ReleaseToken(u)
+	if err != nil {
+		common.LOG.Error("token generate failed ", zap.Any("err: ", err))
+		response.FailWithMessage(response.InternalServerError, fmt.Sprintf("token genetate err: %v", err), ctx)
+	}
+
+	response.OkWithDetailed(gin.H{"token": token, "username": u.UserName}, "login success", ctx)
+
 }
 
 func authentication(loginUser *user.LoginUser) (user.User, error) {

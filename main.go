@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"io"
 	"kubernetes_management_system/common"
-	"kubernetes_management_system/pkg/server"
+	"kubernetes_management_system/pkg/server/routers"
 	"kubernetes_management_system/pkg/signals"
 	"kubernetes_management_system/tool"
 	"os"
@@ -20,14 +20,13 @@ func main() {
 
 	file := createGinLog()
 
-	//init config
 	initConfig()
 
 	//init sql table
 	common.MysqlTable(common.DB)
 	//write log to file and console
 	gin.DefaultWriter = io.MultiWriter(file, os.Stdout)
-	server.InitServer()
+	routers.InitServer()
 
 	defer func() {
 		db, _ := common.DB.DB()

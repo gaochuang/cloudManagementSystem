@@ -19,6 +19,6 @@ func User(group *gin.RouterGroup) {
 	user := group.Group("/user")
 	{
 		user.POST("/register", router.Register)
-		user.POST("login", router.Login)
+		user.POST("/login", router.Login)
 	}
 }

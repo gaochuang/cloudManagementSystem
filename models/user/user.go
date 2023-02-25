@@ -7,7 +7,6 @@ import "kubernetes_management_system/models"
 
 type User struct {
 	models.Mode
-	UID      string `gorm:"column:uid;comment:'user id'" json:"uid"`
 	UserName string `gorm:"column:username;comment:'user name'" json:"userName"`
 	Password string `gorm:"column:password;comment:'user password'" json:"password"`
 }
