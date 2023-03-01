@@ -6,3 +6,6 @@
 
 ##功能(草稿)
 ![avatar](./doc/function.png)
+
+##web server部署controller设计逻辑
+![avatar](./doc/serviceController.drawio.svg)
