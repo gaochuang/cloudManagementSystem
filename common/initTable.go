@@ -11,7 +11,6 @@ func MysqlTable(db *gorm.DB) {
 	err := db.AutoMigrate(
 		user.User{},
 	)
-
 	if err != nil {
 		LOG.Error("register table failed", zap.Any("err: ", err))
 		os.Exit(0)
