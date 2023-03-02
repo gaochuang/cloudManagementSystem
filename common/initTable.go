@@ -3,6 +3,7 @@ package common
 import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"kubernetes_management_system/models/cluster"
 	"kubernetes_management_system/models/user"
 	"os"
 )
@@ -10,6 +11,7 @@ import (
 func MysqlTable(db *gorm.DB) {
 	err := db.AutoMigrate(
 		user.User{},
+		cluster.Cluster{},
 	)
 	if err != nil {
 		LOG.Error("register table failed", zap.Any("err: ", err))

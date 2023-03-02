@@ -15,17 +15,20 @@ const (
 	UserPassEmpty
 
 	InternalServerError = http.StatusInternalServerError
+
+	CreateK8SClusterError = iota + 2000
 )
 
 const (
-	OkMsg                  = "operation success"
-	NoOkMsg                = "operation failed"
-	ParamErrorMsg          = "parameters format error"
-	LoginCheckErrorMsg     = "user name or password error"
-	UserRegisterErrorMsg   = "user register failed"
-	UserNameIsEmptyMsg     = "user name is empty"
-	UserPasswordIsEmptyMsg = "user password is empty"
-	InternalServerErrorMsg = "server internal error"
+	OkMsg                    = "operation success"
+	NoOkMsg                  = "operation failed"
+	ParamErrorMsg            = "parameters format error"
+	LoginCheckErrorMsg       = "user name or password error"
+	UserRegisterErrorMsg     = "user register failed"
+	UserNameIsEmptyMsg       = "user name is empty"
+	UserPasswordIsEmptyMsg   = "user password is empty"
+	InternalServerErrorMsg   = "server internal error"
+	CreateK8SClusterErrorMsg = "create kubernetes cluster failed"
 )
 
 type response struct {
@@ -36,14 +39,15 @@ type response struct {
 }
 
 var customError = map[int]string{
-	SUCCESS:             OkMsg,
-	ERROR:               NoOkMsg,
-	ParamError:          ParamErrorMsg,
-	AuthError:           LoginCheckErrorMsg,
-	UserRegisterFail:    UserRegisterErrorMsg,
-	UserNameEmpty:       UserNameIsEmptyMsg,
-	UserPassEmpty:       UserPasswordIsEmptyMsg,
-	InternalServerError: InternalServerErrorMsg,
+	SUCCESS:               OkMsg,
+	ERROR:                 NoOkMsg,
+	ParamError:            ParamErrorMsg,
+	AuthError:             LoginCheckErrorMsg,
+	UserRegisterFail:      UserRegisterErrorMsg,
+	UserNameEmpty:         UserNameIsEmptyMsg,
+	UserPassEmpty:         UserPasswordIsEmptyMsg,
+	InternalServerError:   InternalServerErrorMsg,
+	CreateK8SClusterError: CreateK8SClusterErrorMsg,
 }
 
 func ResultOk(code int, data interface{}, msg string, ctx *gin.Context) {

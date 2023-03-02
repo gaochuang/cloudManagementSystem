@@ -8,9 +8,8 @@ import (
 )
 
 const (
-	MsecLocalTimeFormat = "2006-01-02 15:04:05.000"
-	SecLocalTimeFormat  = "2006-01-02 15:04:05"
-	DateLocalTimeFormat = "2006-01-02"
+	SecLocalTimeFormat  = "2023-02-02 15:04:05"
+	DateLocalTimeFormat = "2023-02-02"
 )
 
 type Mode struct {

@@ -21,6 +21,7 @@ func InitServer() {
 	privateGroup.Use(middleware.AuthMiddleware())
 	{
 		InitUserInfo(privateGroup)
+		InitClusterRouter(privateGroup)
 	}
 
 	common.LOG.Info("server addr: " + common.CONFIG.System.Addr)
