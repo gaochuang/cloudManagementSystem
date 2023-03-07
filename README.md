@@ -8,3 +8,6 @@ kubernetes_management_system
 
 web server部署controller设计逻辑
 ![avatar](./doc/serviceController.drawio.svg)
+
+aggregator
+![avatar](./doc/1.PNG)
