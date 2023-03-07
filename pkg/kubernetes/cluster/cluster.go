@@ -46,5 +46,29 @@ func CreateK8SCluster(c *gin.Context) {
 	} else {
 		response.OkWithMessage("create cluster successful", c)
 	}
+}
+
+func ListK8sCluster(c *gin.Context) {
+	query := cluster.PaginationQ{}
+
+	//can be queried only
+	if err := c.ShouldBindQuery(&query); err != nil {
+		response.FailWithMessage(response.ParamError, response.ParamErrorMsg, c)
+		return
+	}
+
+	var clusters []cluster.Cluster
+
+	if err := cluster2.ListCluster(&query, &clusters); err != nil {
+		common.LOG.Error("get cluster failed", zap.Any("err", err))
+		response.FailWithMessage(response.InternalServerError, "get cluster failed", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			Data:  clusters,
+			Total: query.Total,
+			Size:  query.Size,
+			Page:  query.Page,
+		}, "get cluster successful", c)
+	}
 
 }

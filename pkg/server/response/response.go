@@ -5,6 +5,13 @@ import (
 	"net/http"
 )
 
+type PageResult struct {
+	Data  interface{} `json:"data"`
+	Total int64       `json:"total"`
+	Page  int         `json:"page"`
+	Size  int         `json:"pageSize"`
+}
+
 const (
 	SUCCESS = iota + 1000
 	ERROR

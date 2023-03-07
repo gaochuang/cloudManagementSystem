@@ -14,3 +14,10 @@ func (c *Cluster) TableName() string {
 	var k models.Mode
 	return k.TableName("k8s_cluster")
 }
+
+type PaginationQ struct {
+	Size    int    `form:"size" json:"size"`
+	Page    int    `form:"page" json:"page"`
+	Total   int64  `json:"total"`
+	Keyword string `form:"keyword" json:"keyword"`
+}
