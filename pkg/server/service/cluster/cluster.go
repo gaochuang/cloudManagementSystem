@@ -38,3 +38,10 @@ func ListCluster(p *cluster.PaginationQ, k *[]cluster.Cluster) (err error) {
 
 	return nil
 }
+
+func GetCluster(id uint) (cluster cluster.Cluster, err error) {
+	if err := common.DB.Where("id = ?", id).First(&cluster).Error; err != nil {
+		return cluster, err
+	}
+	return cluster, nil
+}

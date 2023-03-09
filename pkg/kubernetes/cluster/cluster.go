@@ -9,6 +9,7 @@ import (
 	"kubernetes_management_system/pkg/server/response"
 	"kubernetes_management_system/pkg/server/service"
 	cluster2 "kubernetes_management_system/pkg/server/service/cluster"
+	"strconv"
 )
 
 func CreateK8SCluster(c *gin.Context) {
@@ -71,4 +72,23 @@ func ListK8sCluster(c *gin.Context) {
 		}, "get cluster successful", c)
 	}
 
+}
+
+func GetK8SClusterConfig(c *gin.Context) {
+	clusterId := c.DefaultQuery("clusterId", "1")
+	id, err := strconv.ParseUint(clusterId, 10, 32)
+	if err != nil {
+		common.LOG.Error("cluster id is invalid", zap.Any("err", err))
+		response.FailWithMessage(response.InternalServerError, "cluster id is invalid", c)
+		return
+	}
+
+	clusterConfig, err := cluster2.GetCluster(uint(id))
+	if err != nil {
+		common.LOG.Error("get cluster config failed", zap.Any("err", err))
+		response.FailWithMessage(response.InternalServerError, "get cluster config failed", c)
+		return
+	}
+	data := map[string]interface{}{"config": clusterConfig.KubeConfig, "clusterName": clusterConfig.ClusterName}
+	response.OkWithData(data, c)
 }
