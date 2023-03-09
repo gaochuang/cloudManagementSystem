@@ -21,3 +21,7 @@ type PaginationQ struct {
 	Total   int64  `json:"total"`
 	Keyword string `form:"keyword" json:"keyword"`
 }
+
+type ClusterIds struct {
+	Data interface{} `json:"clusterIds"`
+}

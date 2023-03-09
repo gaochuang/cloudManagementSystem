@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"kubernetes_management_system/common"
@@ -91,4 +92,19 @@ func GetK8SClusterConfig(c *gin.Context) {
 	}
 	data := map[string]interface{}{"config": clusterConfig.KubeConfig, "clusterName": clusterConfig.ClusterName}
 	response.OkWithData(data, c)
+}
+
+func DeleteK8SCluster(c *gin.Context) {
+	var id cluster.ClusterIds
+	if err := service.CheckParameters(c, &id); err != nil {
+		return
+	}
+	if err := cluster2.DeleteCluster(id); err != nil {
+		userName, _ := c.Get("username")
+		common.LOG.Error(fmt.Sprintf("user: %s, delete cluster failed", userName))
+		response.FailWithMessage(response.InternalServerError, "delete cluster failed", c)
+		return
+	}
+	response.Ok(c)
+	return
 }

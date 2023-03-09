@@ -45,3 +45,11 @@ func GetCluster(id uint) (cluster cluster.Cluster, err error) {
 	}
 	return cluster, nil
 }
+
+func DeleteCluster(clusterId cluster.ClusterIds) error {
+	var k cluster.Cluster
+	if err := common.DB.Delete(&k, clusterId.Data).Error; err != nil {
+		return err
+	}
+	return nil
+}
