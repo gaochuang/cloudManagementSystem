@@ -25,3 +25,18 @@ type PaginationQ struct {
 type ClusterIds struct {
 	Data interface{} `json:"clusterIds"`
 }
+
+type NodeStatus struct {
+	NodeCount       int     `json:"node_count"`
+	Ready           int     `json:"ready"`
+	UnReady         int     `json:"unready"`
+	Namespace       int     `json:"namespace"`
+	Deployment      int     `json:"deployment"`
+	Pod             int     `json:"pod"`
+	CpuUsage        float64 `json:"cpu_usage" desc:"cpu usage"`
+	CpuCore         float64 `json:"cpu_core"`
+	CpuCapacityCore float64 `json:"cpu_capacity_core"`
+	MemoryUsage     float64 `json:"memory_usage" desc:"memory usage"`
+	MemoryUsed      float64 `json:"memory_used"`
+	MemoryTotal     float64 `json:"memory_total"`
+}

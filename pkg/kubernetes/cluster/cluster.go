@@ -108,3 +108,18 @@ func DeleteK8SCluster(c *gin.Context) {
 	response.Ok(c)
 	return
 }
+
+func GetK8SClusterDetailInfo(c *gin.Context) {
+	clusterClient, err := client.GetClusterClient(c)
+	if err != nil {
+		response.FailWithMessage(response.InternalServerError, err.Error(), c)
+		return
+	}
+
+	info, err := cluster2.GetClusterInfo(clusterClient)
+	if err != nil {
+		response.FailWithMessage(response.InternalServerError, err.Error(), c)
+		return
+	}
+	response.OkWithData(info, c)
+}
