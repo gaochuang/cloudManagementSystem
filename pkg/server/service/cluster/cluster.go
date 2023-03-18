@@ -76,7 +76,7 @@ func GetClusterInfo(c *kubernetes.Clientset) (*cluster.NodeStatus, error) {
 		return nil, fmt.Errorf("server internal error")
 	}
 
-	data, err := c.RESTClient().Get().AbsPath("/api/v1/namespaces/kube-system/services/tke-kube-state-metrics:http-metrics/proxy/metrics").DoRaw(context.TODO())
+	data, err := c.RESTClient().Get().AbsPath("/api/v1/namespaces/kube-system/services/kube-state-metrics:http-metrics/proxy/metrics").DoRaw(context.TODO())
 	if err != nil {
 		common.LOG.Error("get metrics failed", zap.Any("err: ", err))
 		return nil, err
