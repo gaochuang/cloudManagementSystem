@@ -1,10 +1,10 @@
 package server
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/middleware"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/routers"
 	"github.com/gin-gonic/gin"
-	"kubernetes_management_system/common"
-	"kubernetes_management_system/pkg/server/middleware"
-	"kubernetes_management_system/pkg/server/routers"
 )
 
 func InitServer() {

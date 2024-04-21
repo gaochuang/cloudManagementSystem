@@ -1,8 +1,8 @@
 package common
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/models/user"
 	"github.com/golang-jwt/jwt/v4"
-	"kubernetes_management_system/models/user"
 	"time"
 )
 

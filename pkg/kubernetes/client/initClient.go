@@ -1,15 +1,15 @@
 package client
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/response"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/service/cluster"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	"kubernetes_management_system/common"
-	"kubernetes_management_system/pkg/server/response"
-	"kubernetes_management_system/pkg/server/service/cluster"
 	"strconv"
 )
 

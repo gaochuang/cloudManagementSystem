@@ -1,9 +1,9 @@
 package routers
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/middleware"
 	"github.com/gin-gonic/gin"
-	"kubernetes_management_system/common"
-	"kubernetes_management_system/pkg/server/middleware"
 )
 
 func InitServer() {

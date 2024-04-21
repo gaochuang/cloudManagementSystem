@@ -1,8 +1,8 @@
 package routers
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/pkg/kubernetes/cluster"
 	"github.com/gin-gonic/gin"
-	"kubernetes_management_system/pkg/kubernetes/cluster"
 )
 
 func InitClusterRouter(group *gin.RouterGroup) {

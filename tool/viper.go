@@ -1,10 +1,10 @@
 package tool
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/common"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
-	"kubernetes_management_system/common"
 )
 
 func Viper(path ...string) *viper.Viper {

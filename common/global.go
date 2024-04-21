@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	ConfigFile = "config/config.yaml"
+	ConfigFile = "etc/config.yaml"
 )
 
 var (
