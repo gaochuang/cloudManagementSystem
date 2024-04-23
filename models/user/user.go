@@ -1,7 +1,7 @@
 package user
 
 import (
-	"kubernetes_management_system/models"
+	"github.com/gaochuang/cloudManagementSystem/models"
 )
 
 //https://gorm.io/zh_CN/docs/models.html

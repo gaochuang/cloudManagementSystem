@@ -1,10 +1,10 @@
 package tool
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/common"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"kubernetes_management_system/common"
 	"os"
 )
 

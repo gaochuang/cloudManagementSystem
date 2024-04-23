@@ -1,10 +1,10 @@
 package common
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/models/cluster"
+	"github.com/gaochuang/cloudManagementSystem/models/user"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"kubernetes_management_system/models/cluster"
-	"kubernetes_management_system/models/user"
 	"os"
 )
 

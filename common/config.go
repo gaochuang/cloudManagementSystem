@@ -2,10 +2,10 @@ package common
 
 import (
 	"bytes"
+	"github.com/gaochuang/cloudManagementSystem/pkg/conf"
 	"fmt"
 	"github.com/spf13/viper"
 	"github.com/toolkits/pkg/file"
-	"kubernetes_management_system/pkg/conf"
 )
 
 func ParseConfigFile() error {

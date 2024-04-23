@@ -2,14 +2,14 @@ package cluster
 
 import (
 	"fmt"
+	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/models/cluster"
+	"github.com/gaochuang/cloudManagementSystem/pkg/kubernetes/client"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/response"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/service"
+	cluster2 "github.com/gaochuang/cloudManagementSystem/pkg/server/service/cluster"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"kubernetes_management_system/common"
-	"kubernetes_management_system/models/cluster"
-	"kubernetes_management_system/pkg/kubernetes/client"
-	"kubernetes_management_system/pkg/server/response"
-	"kubernetes_management_system/pkg/server/service"
-	cluster2 "kubernetes_management_system/pkg/server/service/cluster"
 	"strconv"
 )
 

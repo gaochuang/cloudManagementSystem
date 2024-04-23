@@ -1,8 +1,8 @@
 package tool
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/common"
 	"go.uber.org/zap"
-	"kubernetes_management_system/common"
 	"os"
 )
 

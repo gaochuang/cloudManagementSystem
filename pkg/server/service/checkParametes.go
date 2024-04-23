@@ -1,11 +1,11 @@
 package service
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/response"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"kubernetes_management_system/common"
-	"kubernetes_management_system/pkg/server/response"
 )
 
 func CheckParameters(ctx *gin.Context, ptr interface{}) error {

@@ -1,8 +1,8 @@
 package routers
 
 import (
+	router "github.com/gaochuang/cloudManagementSystem/pkg/server/service/user"
 	"github.com/gin-gonic/gin"
-	router "kubernetes_management_system/pkg/server/service/user"
 )
 
 func User(group *gin.RouterGroup) {

@@ -2,13 +2,13 @@ package user
 
 import (
 	"fmt"
+	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/models/user"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/response"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
-	"kubernetes_management_system/common"
-	"kubernetes_management_system/models/user"
-	"kubernetes_management_system/pkg/server/response"
-	"kubernetes_management_system/pkg/server/service"
 )
 
 func Login(ctx *gin.Context) {

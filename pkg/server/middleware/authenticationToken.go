@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/common"
+	user "github.com/gaochuang/cloudManagementSystem/models/user"
 	"github.com/gin-gonic/gin"
-	"kubernetes_management_system/common"
-	user "kubernetes_management_system/models/user"
 	"net/http"
 	"strings"
 )

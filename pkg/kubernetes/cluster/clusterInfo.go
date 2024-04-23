@@ -2,10 +2,10 @@ package cluster
 
 import (
 	"context"
+	"github.com/gaochuang/cloudManagementSystem/common"
 	"go.uber.org/zap"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"kubernetes_management_system/common"
 )
 
 func GetClusterVersion(client *kubernetes.Clientset) (string, error) {

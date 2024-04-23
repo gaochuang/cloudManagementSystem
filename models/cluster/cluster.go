@@ -1,6 +1,6 @@
 package cluster
 
-import "kubernetes_management_system/models"
+import "github.com/gaochuang/cloudManagementSystem/models"
 
 type Cluster struct {
 	models.Mode

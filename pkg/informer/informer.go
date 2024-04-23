@@ -1,9 +1,9 @@
 package informer
 
 import (
+	"github.com/gaochuang/cloudManagementSystem/pkg/client"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/informers"
-	"kubernetes_management_system/pkg/client"
 	"time"
 )
 
