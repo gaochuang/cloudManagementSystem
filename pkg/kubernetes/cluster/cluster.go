@@ -18,7 +18,7 @@ func CreateK8SCluster(c *gin.Context) {
 	var cluster cluster.Cluster
 
 	if err := service.CheckParameters(c, &cluster); err != nil {
-		common.LOG.Error("check cluster parameters failed")
+		common.LOG.Error("check cluster parameters fai`led")
 		return
 	}
 
