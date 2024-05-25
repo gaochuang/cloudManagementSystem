@@ -9,7 +9,6 @@ import (
 )
 
 func GormMysql() *gorm.DB {
-
 	config := common.CONFIG.Mysql
 	//https://gorm.io/zh_CN/docs/connecting_to_the_database.html
 	dsn := config.UserName + ":" + config.Password + "@tcp(" + config.Addr + ")/" + config.DBName + "?" + config.Config
