@@ -13,6 +13,5 @@ func MySqlTables(db *gorm.DB) {
 		cluster.Cluster{},
 	)
 	if err != nil {
-
 	}
 }

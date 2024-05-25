@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gaochuang/cloudManagementSystem/cmd/app/config"
+	"github.com/gaochuang/cloudManagementSystem/pkg/log"
+	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -12,6 +14,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"os"
+	"strings"
 )
 
 const (
@@ -72,6 +75,18 @@ func (o *Options) Viper(path ...string) *viper.Viper {
 		fmt.Println(err)
 	}
 	return v
+}
+func (o *Options) logger() error {
+	logType := strings.ToLower(o.Config.Log.Format)
+	if logType == "file" {
+		if err := utils.EnsureDirectoryExists(o.Config.Log.DirectorPath); err != nil {
+			return err
+		}
+	}
+	if err := log.SetupLoggers(logType, o.Config.Log.DirectorPath, o.Config.Log.Level); err != nil {
+		return err
+	}
+	return nil
 }
 
 //根据配置决定是够需要开启mysql的日志
