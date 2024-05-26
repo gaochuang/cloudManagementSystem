@@ -1,6 +1,7 @@
 package options
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
@@ -8,13 +9,18 @@ import (
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+	"time"
 )
 
 const (
@@ -36,7 +42,7 @@ func NewOptions() *Options {
 	}
 }
 
-func (o *Options) Viper(path ...string) *viper.Viper {
+func (o *Options) viper(path ...string) *viper.Viper {
 	var configFile string
 	if len(path) == 0 {
 		flag.StringVar(&configFile, "c", "", "chose server config file")
@@ -76,6 +82,7 @@ func (o *Options) Viper(path ...string) *viper.Viper {
 	}
 	return v
 }
+
 func (o *Options) logger() error {
 	logType := strings.ToLower(o.Config.Log.Format)
 	if logType == "file" {
@@ -89,7 +96,27 @@ func (o *Options) logger() error {
 	return nil
 }
 
-//根据配置决定是够需要开启mysql的日志
+func (o *Options) SetupServices() error {
+	if err := o.logger(); err != nil {
+		return err
+	}
+	if err := o.GormMysql(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *Options) Initialize() error {
+	o.GinEngine = gin.Default()
+	o.viper()
+
+	if err := o.SetupServices(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// 根据配置决定是够需要开启mysql的日志
 func (o *Options) gormConfig(mod string) *gorm.Config {
 	setLogger := func(level string) logger.Interface {
 		switch level {
@@ -149,4 +176,39 @@ func (o *Options) GormMysql() (err error) {
 
 	}
 	return
+}
+
+func (o *Options) BindConfigurationFlag(cmd *cobra.Command) {
+	cmd.Flags().StringVar(&o.ConfigFile, "config", "", "please specify the configuration file path of server")
+}
+
+func (o *Options) RunHttpServer() error {
+	server := &http.Server{
+		ReadHeaderTimeout: 50,
+		WriteTimeout:      50,
+		Handler:           o.GinEngine,
+		Addr:              fmt.Sprintf("%s:%d", o.Config.Http.Addr, o.Config.Http.Port),
+	}
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			err = fmt.Errorf("listen: %w", err)
+			return
+		}
+	}()
+	<-quit
+
+	fmt.Println("Shutting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
+		err = fmt.Errorf("server forced to shutdown: %v", err)
+		return err
+	}
+
+	return nil
 }

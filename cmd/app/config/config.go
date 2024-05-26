@@ -23,8 +23,7 @@ type Zap struct {
 
 // System 用于配置系统级别的
 type System struct {
-	Addr          string `mapstructure:"addr" json:"addr" yaml:"addr"`
-	AutoMigrateDb bool   `mapstructure:"auto-migrate-db" json:"autoMigrateDb" yaml:"auto-migrate-db"`
+	AutoMigrateDb bool `mapstructure:"auto-migrate-db" json:"autoMigrateDb" yaml:"auto-migrate-db"`
 }
 
 // LogOptions 用于配置通用日志
@@ -34,9 +33,15 @@ type LogOptions struct {
 	Level        string `mapstructure:"level" json:"level" yaml:"level"`
 }
 
+type HttpOptions struct {
+	Addr string `mapstructure:"addr" json:"addr" yaml:"addr"`
+	Port int    `mapstructure:"port" json:"port" yaml:"port"`
+}
+
 type Config struct {
 	Mysql  MysqlOptions `mapstructure:"mysql" json:"mysql" yaml:"mysql"`
 	Zap    Zap          `mapstructure:"zap" json:"zap" yaml:"zap"`
 	System System       `mapstructure:"system" json:"system" yaml:"system"`
 	Log    LogOptions   `mapstructure:"log" json:"log" yaml:"log"`
+	Http   HttpOptions  `mapstructure:"http" json:"http" yaml:"http"`
 }
