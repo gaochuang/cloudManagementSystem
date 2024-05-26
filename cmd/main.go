@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Gao Chuang <ienjoyarmlinux@163.com>
+Copyright © 2024 Gao chuang <ienjoyarmlinux@163.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ func main() {
 }
 
 func initConfig() {
-	common.VIPER = tool.Viper()
 	common.LOG = tool.Zap()
 	common.DB = tool.GormMysql()
 }

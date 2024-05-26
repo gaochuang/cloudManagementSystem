@@ -1,89 +1,51 @@
 package log
 
 import (
+	"context"
+	"errors"
 	"fmt"
-	"github.com/gaochuang/cloudManagementSystem/common"
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
 	"os"
-	"path"
+	"strings"
 	"time"
 )
 
-var (
-	level zapcore.Level
+const (
+	STDERR = "stderr"
+	FILE   = "file"
 )
 
-func Zap() (logger *zap.Logger) {
-	ok, _ := DirExit(common.CONFIG.Zap.Director)
-	if !ok {
-		fmt.Printf("create %v directory\n", common.CONFIG.Zap.Director)
-		err := os.Mkdir(common.CONFIG.Zap.Director, os.ModePerm)
-		if err != nil {
-			panic(fmt.Errorf("create %s failed, reason: +%v", common.CONFIG.Zap.Director, err))
+type zapLogger struct {
+	logger    *zap.Logger
+	writer    io.Writer
+	verbosity int
+}
+
+func NewZapLogger(c *Configuration) (LoggerInterface, error) {
+	if c == nil {
+		return nil, errors.New("input c is null")
+	}
+	var write io.Writer
+	switch strings.ToLower(c.LogType) {
+	//日志将输出到标准错误输出
+	case STDERR:
+		write = os.Stderr
+	case FILE:
+		write = &lumberjack.Logger{
+			Filename:   c.LogFileDir, //日志文件路径
+			MaxSize:    c.MaxSize,    //每个日志文件的最大尺寸(MB)
+			MaxAge:     c.MaxAge,     //保留旧文件最大天数
+			MaxBackups: c.MaxBackups, //保留旧文件最大数量
+			Compress:   c.Compress,   //是否压缩旧文件
 		}
-	}
-
-	switch common.CONFIG.Zap.Level {
-	case "debug":
-		level = zap.DebugLevel
-	case "info":
-		level = zap.InfoLevel
-	case "warn":
-		level = zap.WarnLevel
-	case "error":
-		level = zap.ErrorLevel
-	case "panic":
-		level = zap.PanicLevel
-	case "dpanic":
-		level = zap.PanicLevel
-	case "fatal":
-		level = zap.FatalLevel
 	default:
-		level = zap.InfoLevel
+		write = os.Stdout //如果LogType是其他值或未指定，日志将输出到标准输出。
 	}
 
-	if zap.DebugLevel == level || zap.ErrorLevel == level {
-		logger = zap.New(getEncoderCore(), zap.AddStacktrace(level))
-	} else {
-		logger = zap.New(getEncoderCore())
-	}
-
-	return logger
-}
-
-func getEncoderCore() (core zapcore.Core) {
-	writer, err := getWriteSyncer()
-	if err != nil {
-		fmt.Printf("get write syncer failed: %v \n", err.Error())
-		return
-	}
-	return zapcore.NewCore(getEncoder(), writer, level)
-}
-
-func getWriteSyncer() (zapcore.WriteSyncer, error) {
-	fileWriter, err := rotatelogs.New(path.Join(common.CONFIG.Zap.Director, "%Y-%m-%d.log"),
-		rotatelogs.WithMaxAge(7*24*time.Hour),
-		rotatelogs.WithRotationTime(24*time.Hour),
-		rotatelogs.WithLinkName(common.CONFIG.Zap.LinkName),
-	)
-
-	if common.CONFIG.Zap.LogInConsole {
-		return zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(fileWriter)), err
-	}
-	return zapcore.AddSync(fileWriter), err
-}
-
-func getEncoder() zapcore.Encoder {
-	if common.CONFIG.Zap.Format == "json" {
-		return zapcore.NewJSONEncoder(getEncoderConfig())
-	}
-	return zapcore.NewConsoleEncoder(getEncoderConfig())
-}
-
-func getEncoderConfig() (config zapcore.EncoderConfig) {
-	config = zapcore.EncoderConfig{
+	config := zapcore.EncoderConfig{
 		TimeKey:        "time",
 		MessageKey:     "message",
 		LevelKey:       "level",
@@ -96,19 +58,81 @@ func getEncoderConfig() (config zapcore.EncoderConfig) {
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.FullCallerEncoder,
 	}
-	switch {
-	case common.CONFIG.Zap.EncodeLevel == "LowercaseLevelEncoder":
-		config.EncodeLevel = zapcore.LowercaseLevelEncoder
-	case common.CONFIG.Zap.EncodeLevel == "LowercaseColorLevelEncoder":
-		config.EncodeLevel = zapcore.LowercaseColorLevelEncoder
-	case common.CONFIG.Zap.EncodeLevel == "CapitalLevelEncoder":
-		config.EncodeLevel = zapcore.CapitalLevelEncoder
-	case common.CONFIG.Zap.EncodeLevel == "CapitalColorLevelEncoder":
-		config.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	default:
-		config.EncodeLevel = zapcore.LowercaseLevelEncoder
+
+	var logLevel zapcore.Level
+
+	if err := logLevel.UnmarshalText([]byte(c.LogLevel)); err != nil {
+		return nil, err
 	}
-	return config
+
+	core := zapcore.NewCore(zapcore.NewJSONEncoder(config),
+		zapcore.NewMultiWriteSyncer(zapcore.AddSync(write)),
+		logLevel)
+
+	var cores []zapcore.Core
+
+	cores = append(cores, core)
+	logger := zap.New(zapcore.NewTee(cores...), zap.AddCaller(), zap.AddCallerSkip(2))
+
+	return &zapLogger{
+		logger:    logger,
+		writer:    write,
+		verbosity: 0,
+	}, nil
+}
+
+func (zl *zapLogger) LogInfo(msg string, fields ...zap.Field) {
+	zl.logger.Info(msg, fields...)
+}
+
+func (zl *zapLogger) LogInfoWithCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	if traceID, ok := ctx.Value("X-Trace-Id").(string); ok {
+		zl.LogInfo(msg, append(fields, zap.String("traceId", traceID))...)
+	} else {
+		zl.LogInfo(msg, fields...)
+	}
+}
+
+func (zl *zapLogger) LogError(msg string, fields ...zap.Field) {
+	zl.logger.Error(msg, fields...)
+}
+
+func (zl *zapLogger) LogErrorWithCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	if val := ctx.Value("X-Trace-Id"); val != nil {
+		if trace, ok := val.(string); ok {
+			zl.LogError(msg, append(fields, zap.String("traceId", trace))...)
+		}
+	} else {
+		zl.LogError(msg, fields...)
+	}
+}
+
+func (zl *zapLogger) LogWarn(msg string, fields ...zap.Field) {
+	zl.logger.Warn(msg, fields...)
+}
+
+func (zl *zapLogger) LogWarnWithCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	if val := ctx.Value("X-Trace-Id"); val != nil {
+		if trace, ok := val.(string); ok {
+			zl.LogWarn(msg, append(fields, zap.String("traceId", trace))...)
+		}
+	} else {
+		zl.LogWarn(msg, fields...)
+	}
+
+}
+
+func (zl *zapLogger) GetLoggerFromCtx(ctx context.Context) *zap.Logger {
+	log, ok := ctx.Value("X-Trace-Id").(*zap.Logger)
+	if ok {
+		return log.WithOptions(zap.AddCallerSkip(-1))
+	}
+	return zl.logger
+}
+
+func (zl *zapLogger) AddLoggerCtx(ctx context.Context, key, value interface{}) context.Context {
+	ctx = context.WithValue(ctx, key, value)
+	return ctx
 }
 
 func formatEncodeTime(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
