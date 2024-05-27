@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Gao chuang <ienjoyarmlinux@163.com>
+Copyright © 2024 Gao Chuang <ienjoyarmlinux@163.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,14 +17,15 @@ package main
 
 import (
 	"github.com/gaochuang/cloudManagementSystem/cmd/app"
+	"github.com/gin-gonic/gin"
+	"math/rand"
 	"os"
-)
-
-var (
-	log = "gin.log"
+	"time"
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+	gin.SetMode(gin.DebugMode)
 	cmd := app.NewServerCommand()
 	if err := cmd.Execute(); err != nil {
 		os.Exit(1)

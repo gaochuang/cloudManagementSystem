@@ -23,7 +23,7 @@ type Zap struct {
 
 // System 用于配置系统级别的
 type System struct {
-	AutoMigrateDb bool `mapstructure:"auto-migrate-db" json:"autoMigrateDb" yaml:"auto-migrate-db"`
+	AutoMigrateDb bool `mapstructure:"auto-migrate-db" json:"autoMigrateDb" yaml:"auto-migrate-db"` //自动创建表
 }
 
 // LogOptions 用于配置通用日志

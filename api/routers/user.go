@@ -5,17 +5,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func User(group *gin.RouterGroup) {
-	guest := group.Group("/wukong")
+func InitializePublicRoutes(engine *gin.Engine) {
+	guest := engine.Group("/api/v1/platform")
 	{
-		guest.GET("/ping", func(context *gin.Context) {
-			context.String(200, "pong")
+		guest.GET("/ping", func(c *gin.Context) {
+			c.String(200, "ping")
 		})
-		guest.GET("/addr", func(context *gin.Context) {
-			context.String(200, context.Request.RemoteAddr)
+		guest.GET("/address", func(c *gin.Context) {
+			c.String(200, c.Request.RemoteAddr)
 		})
 	}
+}
 
+func User(group *gin.RouterGroup) {
 	user := group.Group("/user")
 	{
 		user.POST("/register", router.Register)

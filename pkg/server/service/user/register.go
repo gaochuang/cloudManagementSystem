@@ -1,12 +1,12 @@
 package user
 
 import (
-	"github.com/gaochuang/cloudManagementSystem/common"
-	"github.com/gaochuang/cloudManagementSystem/models/user"
-	"github.com/gaochuang/cloudManagementSystem/pkg/server/response"
-	"github.com/gaochuang/cloudManagementSystem/pkg/server/service"
 	"errors"
 	"fmt"
+	"github.com/gaochuang/cloudManagementSystem/api/response"
+	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/models/user"
+	"github.com/gaochuang/cloudManagementSystem/pkg/server/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"

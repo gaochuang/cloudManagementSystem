@@ -3,6 +3,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/gaochuang/cloudManagementSystem/api/routers"
 	"github.com/gaochuang/cloudManagementSystem/cmd/app/options"
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"os"
@@ -44,8 +45,13 @@ func NewServerCommand() *cobra.Command {
 }
 
 func run(opt *options.Options) error {
+	initRouters(opt)
 	if err := opt.RunHttpServer(); err != nil {
 		return err
 	}
 	return nil
+}
+
+func initRouters(opt *options.Options) {
+	routers.InitializePublicRoutes(opt.GinEngine)
 }

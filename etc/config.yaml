@@ -1,6 +1,7 @@
-# server configuration
-system:
-  addr: "192.168.31.100:8080"
+# http server config
+http:
+  addr: 'localhost'
+  port: 8000
 
 # zap logger configuration
 zap:
@@ -14,8 +15,20 @@ zap:
 
 # mysql configuration
 mysql:
-  addr: '127.0.0.1:3306'
+  addr: '192.168.31.100:3306'
   db-name: 'cluster'
   username: 'root'
   password: '123456'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
+  log-mode: false
+  log-zap: "Error" # Error/Warn/Info/Silent
+
+log:
+  # stdout, stderr, file
+  format: 'stdout'
+  level: 'INFO'
+  director-path: '/tmp/logs'
+
+system:
+  # 是否开启自动创建表, 生产环境建议设置为 false
+  auto-migrate-db: true

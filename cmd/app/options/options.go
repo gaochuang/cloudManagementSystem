@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gaochuang/cloudManagementSystem/cmd/app/config"
+	"github.com/gaochuang/cloudManagementSystem/database"
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"
@@ -100,6 +101,7 @@ func (o *Options) SetupServices() error {
 	if err := o.logger(); err != nil {
 		return err
 	}
+
 	if err := o.GormMysql(); err != nil {
 		return err
 	}
@@ -156,12 +158,12 @@ func (o *Options) GormMysql() (err error) {
 
 	o.DB, err = gorm.Open(mysql.New(sqlConfig), o.gormConfig(config.LogMode))
 	if err != nil {
-		o.LOG.Error("mysql connection failed", zap.Any("err:", err))
+		log.Logger.LogError("mysql connection failed", zap.Any("err: ", err))
 		return
 	}
 	sqlDB, err := o.DB.DB()
 	if err != nil {
-		o.LOG.Error("connect db failed", zap.Any("err:", err))
+		log.Logger.LogError("connect db failed", zap.Any("err:", err))
 		return
 	}
 	sqlDB.SetMaxIdleConns(10)
@@ -172,8 +174,11 @@ func (o *Options) GormMysql() (err error) {
 		return
 	}
 
+	//初始化数据库表
 	if o.Config.System.AutoMigrateDb {
-
+		if err = database.MySqlTables(o.DB); err != nil {
+			return
+		}
 	}
 	return
 }
