@@ -22,10 +22,6 @@ func InitClient() {
 	}
 }
 
-func init() {
-	InitClient()
-}
-
 func GetClient() kubernetes.Interface {
 	return Client
 }

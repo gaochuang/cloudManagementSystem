@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/gaochuang/cloudManagementSystem/common"
-	"github.com/gaochuang/cloudManagementSystem/pkg/server/response"
 	"fmt"
+	"github.com/gaochuang/cloudManagementSystem/api/response"
+	"github.com/gaochuang/cloudManagementSystem/common"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
