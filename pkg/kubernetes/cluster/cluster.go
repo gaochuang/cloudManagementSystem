@@ -6,8 +6,8 @@ import (
 	"github.com/gaochuang/cloudManagementSystem/common"
 	"github.com/gaochuang/cloudManagementSystem/models/cluster"
 	"github.com/gaochuang/cloudManagementSystem/pkg/kubernetes/client"
-	"github.com/gaochuang/cloudManagementSystem/pkg/server/service"
 	cluster2 "github.com/gaochuang/cloudManagementSystem/pkg/server/service/cluster"
+	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"strconv"
@@ -17,7 +17,7 @@ func CreateK8SCluster(c *gin.Context) {
 
 	var cluster cluster.Cluster
 
-	if err := service.CheckParameters(c, &cluster); err != nil {
+	if err := utils.CheckParameters(c, &cluster); err != nil {
 		common.LOG.Error("check cluster parameters fai`led")
 		return
 	}
@@ -96,7 +96,7 @@ func GetK8SClusterConfig(c *gin.Context) {
 
 func DeleteK8SCluster(c *gin.Context) {
 	var id cluster.ClusterIds
-	if err := service.CheckParameters(c, &id); err != nil {
+	if err := utils.CheckParameters(c, &id); err != nil {
 		return
 	}
 	if err := cluster2.DeleteCluster(id); err != nil {

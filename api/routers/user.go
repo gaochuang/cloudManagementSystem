@@ -1,11 +1,14 @@
 package routers
 
 import (
-	router "github.com/gaochuang/cloudManagementSystem/pkg/server/service/user"
+	"github.com/gaochuang/cloudManagementSystem/api/middleware"
+	user2 "github.com/gaochuang/cloudManagementSystem/handlers/user"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func InitializePublicRoutes(engine *gin.Engine) {
+	engine.Use(middleware.CoreMiddleware())
 	guest := engine.Group("/api/v1/platform")
 	{
 		guest.GET("/ping", func(c *gin.Context) {
@@ -15,20 +18,21 @@ func InitializePublicRoutes(engine *gin.Engine) {
 			c.String(200, c.Request.RemoteAddr)
 		})
 	}
-}
 
-func User(group *gin.RouterGroup) {
-	user := group.Group("/user")
+	login := engine.Group("/api/v1/user")
 	{
-		user.POST("/register", router.Register)
-		user.POST("/login", router.Login)
+		login.POST("/register", user2.Register)
+		login.POST("/login", user2.Login)
 	}
+
+	//为prometheus提供metrics数据, 请求数量、响应时间、错误率等
+	engine.GET("/metrics", gin.WrapH(promhttp.Handler()))
 }
 
-func InitUserInfo(group *gin.RouterGroup) {
-	routerGroup := group.Group("user")
+func InitUserRouter(engin *gin.Engine) {
+	user := engin.Group("/api/v1/user")
 	{
-		routerGroup.GET("info", router.UserInfo)
+		user.GET("info", user2.UserInfo)
 	}
 
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/gaochuang/cloudManagementSystem/api/response"
 	"github.com/gaochuang/cloudManagementSystem/common"
 	"github.com/gaochuang/cloudManagementSystem/models/user"
-	"github.com/gaochuang/cloudManagementSystem/pkg/server/service"
+	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
@@ -14,7 +14,7 @@ import (
 func Login(ctx *gin.Context) {
 	var loginUser user.LoginUser
 
-	if err := service.CheckParameters(ctx, &loginUser); err != nil {
+	if err := utils.CheckParameters(ctx, &loginUser); err != nil {
 		return
 	}
 

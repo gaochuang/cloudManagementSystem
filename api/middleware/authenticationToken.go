@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gaochuang/cloudManagementSystem/common"
-	user "github.com/gaochuang/cloudManagementSystem/models/user"
+	"github.com/gaochuang/cloudManagementSystem/models/user"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
