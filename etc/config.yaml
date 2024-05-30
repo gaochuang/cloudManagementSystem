@@ -1,7 +1,7 @@
 # http server config
 http:
   addr: 'localhost'
-  port: 8000
+  port: 58888
 
 # zap logger configuration
 zap:

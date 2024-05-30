@@ -189,8 +189,8 @@ func (o *Options) BindConfigurationFlag(cmd *cobra.Command) {
 
 func (o *Options) RunHttpServer() error {
 	server := &http.Server{
-		ReadHeaderTimeout: 50,
-		WriteTimeout:      50,
+		ReadHeaderTimeout: 50 * time.Second,
+		WriteTimeout:      50 * time.Second,
 		Handler:           o.GinEngine,
 		Addr:              fmt.Sprintf("%s:%d", o.Config.Http.Addr, o.Config.Http.Port),
 	}
