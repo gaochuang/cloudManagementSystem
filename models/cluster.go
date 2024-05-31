@@ -1,9 +1,7 @@
-package cluster
-
-import "github.com/gaochuang/cloudManagementSystem/models"
+package models
 
 type Cluster struct {
-	models.Mode
+	Mode
 	ClusterName    string `json:"clusterName" gorm:"comment:clusterName" binding:"required"`
 	KubeConfig     string `json:"kubeConfig" gorm:"comment:clusterCertificate;type:varchar(15360)" binding:"required"`
 	NodeCount      int    `json:"nodeCount" gorm:"comment:cluster node counts"`
@@ -11,7 +9,7 @@ type Cluster struct {
 }
 
 func (c *Cluster) TableName() string {
-	var k models.Mode
+	var k Mode
 	return k.TableName("k8s_cluster")
 }
 

@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/api/response"
 	"github.com/gaochuang/cloudManagementSystem/common"
-	"github.com/gaochuang/cloudManagementSystem/models/user"
-	"github.com/gaochuang/cloudManagementSystem/pkg/server/service"
+	"github.com/gaochuang/cloudManagementSystem/models"
+	"github.com/gaochuang/cloudManagementSystem/pkg/log"
+	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
@@ -14,8 +15,8 @@ import (
 )
 
 func Register(ctx *gin.Context) {
-	var user user.User
-	err := service.CheckParameters(ctx, &user)
+	var user models.User
+	err := utils.CheckParameters(ctx, &user)
 	if err != nil {
 		return
 	}
@@ -25,14 +26,14 @@ func Register(ctx *gin.Context) {
 
 	inter, err := userRegister(&user)
 	if err != nil {
-		common.LOG.Error(fmt.Sprintf("user: %v, register failed,", user.UserName), zap.Any("err: ", err))
+		log.Logger.LogError("register failed: ", zap.Any("user: ", user.UserName), zap.Any("err: ", err))
 	} else {
 		response.ResultOk(0, inter, "register success", ctx)
 	}
 }
 
-func userRegister(u *user.User) (userInter user.User, err error) {
-	var user user.User
+func userRegister(u *models.User) (userInter models.User, err error) {
+	var user models.User
 	err = common.DB.Where("username = ? ", u.UserName).First(&user).Error
 	if err != gorm.ErrRecordNotFound {
 		return userInter, errors.New(fmt.Sprintf("user %v already exits", user.UserName))

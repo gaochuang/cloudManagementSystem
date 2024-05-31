@@ -1,8 +1,7 @@
 package common
 
 import (
-	"github.com/gaochuang/cloudManagementSystem/models/cluster"
-	"github.com/gaochuang/cloudManagementSystem/models/user"
+	"github.com/gaochuang/cloudManagementSystem/models"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"os"
@@ -10,8 +9,8 @@ import (
 
 func MysqlTable(db *gorm.DB) {
 	err := db.AutoMigrate(
-		user.User{},
-		cluster.Cluster{},
+		models.User{},
+		models.Cluster{},
 	)
 	if err != nil {
 		LOG.Error("register table failed", zap.Any("err: ", err))

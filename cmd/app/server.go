@@ -54,4 +54,5 @@ func run(opt *options.Options) error {
 
 func initRouters(opt *options.Options) {
 	routers.InitializePublicRoutes(opt.GinEngine)
+	routers.InitUserRouter(opt.GinEngine)
 }

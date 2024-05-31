@@ -1,8 +1,7 @@
 package database
 
 import (
-	"github.com/gaochuang/cloudManagementSystem/models/cluster"
-	"github.com/gaochuang/cloudManagementSystem/models/user"
+	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -11,8 +10,8 @@ import (
 func MySqlTables(db *gorm.DB) error {
 	//数据库 表的初始化
 	err := db.AutoMigrate(
-		user.User{},
-		cluster.Cluster{},
+		models.User{},
+		models.Cluster{},
 	)
 	if err != nil {
 		log.Logger.LogError("create database tablse failed", zap.Any("err: ", err))

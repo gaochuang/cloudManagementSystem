@@ -1,11 +1,11 @@
-package service
+package utils
 
 import (
-	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/api/response"
-	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"go.uber.org/zap"
 )
 
 func CheckParameters(ctx *gin.Context, ptr interface{}) error {
@@ -22,8 +22,9 @@ func CheckParameters(ctx *gin.Context, ptr interface{}) error {
 		panic(i.Error())
 	}
 
+	//从http请求中解析数据，赋值给ptr
 	if err := ctx.ShouldBindBodyWith(&ptr, binding.JSON); err != nil {
-		common.LOG.Warn(fmt.Sprintf("parameter error: %v", err.Error()))
+		log.Logger.LogWarn("parameter error", zap.Any("err: ", err))
 		response.ResultFail(response.ParamError, "", "", ctx)
 		return err
 	}

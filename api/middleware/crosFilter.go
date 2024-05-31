@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func Cores() gin.HandlerFunc {
+func CoreMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		origin := context.Request.Header.Get("Origin")
 		context.Header("Access-Control-Allow-Origin", origin)
