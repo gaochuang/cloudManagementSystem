@@ -1,10 +1,10 @@
 package cluster
 
 import (
-	"github.com/gaochuang/cloudManagementSystem/common"
-	"github.com/gaochuang/cloudManagementSystem/models/cluster"
 	"context"
 	"fmt"
+	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/prometheus/common/expfmt"
 	"go.uber.org/zap"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,12 +21,12 @@ var (
 	kubeNodeStatusAllocatableMemoryBytes        float64 = 0
 )
 
-func StorageCluster(cluster cluster.Cluster) error {
+func StorageCluster(cluster models.Cluster) error {
 	err := common.DB.Create(&cluster).Error
 	return err
 }
 
-func ListCluster(p *cluster.PaginationQ, k *[]cluster.Cluster) (err error) {
+func ListCluster(p *models.PaginationQ, k *[]models.Cluster) (err error) {
 	if p.Page < 1 {
 		p.Page = 1
 	}
@@ -54,23 +54,23 @@ func ListCluster(p *cluster.PaginationQ, k *[]cluster.Cluster) (err error) {
 	return nil
 }
 
-func GetCluster(id uint) (cluster cluster.Cluster, err error) {
+func GetCluster(id uint) (cluster models.Cluster, err error) {
 	if err := common.DB.Where("id = ?", id).First(&cluster).Error; err != nil {
 		return cluster, err
 	}
 	return cluster, nil
 }
 
-func DeleteCluster(clusterId cluster.ClusterIds) error {
-	var k cluster.Cluster
+func DeleteCluster(clusterId models.ClusterIds) error {
+	var k models.Cluster
 	if err := common.DB.Delete(&k, clusterId.Data).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetClusterInfo(c *kubernetes.Clientset) (*cluster.NodeStatus, error) {
-	var node cluster.NodeStatus
+func GetClusterInfo(c *kubernetes.Clientset) (*models.NodeStatus, error) {
+	var node models.NodeStatus
 	if status := getNodesRunningStatus(c, &node); status == nil {
 		common.LOG.Error("get node running status failed")
 		return nil, fmt.Errorf("server internal error")
@@ -123,7 +123,7 @@ func GetClusterInfo(c *kubernetes.Clientset) (*cluster.NodeStatus, error) {
 	return &node, nil
 }
 
-func getNodesRunningStatus(client *kubernetes.Clientset, status *cluster.NodeStatus) *cluster.NodeStatus {
+func getNodesRunningStatus(client *kubernetes.Clientset, status *models.NodeStatus) *models.NodeStatus {
 	nodes, err := client.CoreV1().Nodes().List(context.TODO(), v1.ListOptions{})
 	if err != nil {
 		common.LOG.Error("get node failed", zap.Any("err: ", err))

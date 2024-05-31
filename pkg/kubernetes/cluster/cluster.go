@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/api/response"
 	"github.com/gaochuang/cloudManagementSystem/common"
-	"github.com/gaochuang/cloudManagementSystem/models/cluster"
+	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/gaochuang/cloudManagementSystem/pkg/kubernetes/client"
 	cluster2 "github.com/gaochuang/cloudManagementSystem/pkg/server/service/cluster"
 	"github.com/gaochuang/cloudManagementSystem/utils"
@@ -15,7 +15,7 @@ import (
 
 func CreateK8SCluster(c *gin.Context) {
 
-	var cluster cluster.Cluster
+	var cluster models.Cluster
 
 	if err := utils.CheckParameters(c, &cluster); err != nil {
 		common.LOG.Error("check cluster parameters fai`led")
@@ -51,7 +51,7 @@ func CreateK8SCluster(c *gin.Context) {
 }
 
 func ListK8sCluster(c *gin.Context) {
-	query := cluster.PaginationQ{}
+	query := models.PaginationQ{}
 
 	//can be queried only
 	if err := c.ShouldBindQuery(&query); err != nil {
@@ -59,7 +59,7 @@ func ListK8sCluster(c *gin.Context) {
 		return
 	}
 
-	var clusters []cluster.Cluster
+	var clusters []models.Cluster
 
 	if err := cluster2.ListCluster(&query, &clusters); err != nil {
 		common.LOG.Error("get cluster failed", zap.Any("err", err))
@@ -95,7 +95,7 @@ func GetK8SClusterConfig(c *gin.Context) {
 }
 
 func DeleteK8SCluster(c *gin.Context) {
-	var id cluster.ClusterIds
+	var id models.ClusterIds
 	if err := utils.CheckParameters(c, &id); err != nil {
 		return
 	}

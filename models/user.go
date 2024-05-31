@@ -1,14 +1,10 @@
-package user
-
-import (
-	"github.com/gaochuang/cloudManagementSystem/models"
-)
+package models
 
 //https://gorm.io/zh_CN/docs/models.html
 //https://gorm.io/zh_CN/docs/conventions.html
 
 type User struct {
-	models.Mode
+	Mode
 	UID      string `gorm:"column:uid;comment:'user uid'" json:"uid"`
 	UserName string `gorm:"column:username;comment:'user name'" json:"userName"`
 	Password string `gorm:"column:password;comment:'user password'" json:"password"`

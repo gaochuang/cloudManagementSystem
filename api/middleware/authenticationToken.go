@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gaochuang/cloudManagementSystem/common"
-	"github.com/gaochuang/cloudManagementSystem/models/user"
+	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -34,7 +34,7 @@ func decodeToken(token string, ctx *gin.Context) {
 		return
 	}
 
-	var u user.User
+	var u models.User
 
 	err = common.DB.Where("userName = ? ", claims.Username).First(&u).Error
 	if err != nil {
@@ -46,8 +46,8 @@ func decodeToken(token string, ctx *gin.Context) {
 	ctx.Next()
 }
 
-func authentication(loginUser *user.LoginUser) (user.User, error) {
-	var user user.User
+func authentication(loginUser *models.LoginUser) (models.User, error) {
+	var user models.User
 	err := common.DB.Where("userName = ? ", loginUser.UserName).First(&user).Error
 	return user, err
 }
