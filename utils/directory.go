@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"go.uber.org/zap"
 	"os"
 )
@@ -34,7 +34,7 @@ func CreateDirs(dirPaths ...string) (err error) {
 		if !exit {
 			err = os.Mkdir(v, os.ModePerm)
 			if err != nil {
-				common.LOG.Error("create directory failed"+v, zap.Any("error:", err))
+				log.Logger.LogError("create directory failed"+v, zap.Any("error:", err))
 			}
 		}
 	}
@@ -43,10 +43,10 @@ func CreateDirs(dirPaths ...string) (err error) {
 
 func DeleteDirs(dirPaths ...string) (err error) {
 	for _, v := range dirPaths {
-		common.LOG.Debug("delete director" + v)
+		log.Logger.LogInfo("delete director" + v)
 		err := os.Remove(v)
 		if err != nil {
-			common.LOG.Error("delete directory failed"+v, zap.Any("error:", err))
+			log.Logger.LogError("delete directory failed"+v, zap.Any("error:", err))
 		}
 	}
 	return err

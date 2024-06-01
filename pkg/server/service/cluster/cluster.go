@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/common"
 	"github.com/gaochuang/cloudManagementSystem/models"
+	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"github.com/prometheus/common/expfmt"
 	"go.uber.org/zap"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -72,19 +73,19 @@ func DeleteCluster(clusterId models.ClusterIds) error {
 func GetClusterInfo(c *kubernetes.Clientset) (*models.NodeStatus, error) {
 	var node models.NodeStatus
 	if status := getNodesRunningStatus(c, &node); status == nil {
-		common.LOG.Error("get node running status failed")
+		log.Logger.LogError("get node running status failed")
 		return nil, fmt.Errorf("server internal error")
 	}
 
 	data, err := c.RESTClient().Get().AbsPath("/api/v1/namespaces/kube-system/services/kube-state-metrics:http-metrics/proxy/metrics").DoRaw(context.TODO())
 	if err != nil {
-		common.LOG.Error("get metrics failed", zap.Any("err: ", err))
+		log.Logger.LogError("get version from cluster failed", zap.Any("err: ", err))
 		return nil, err
 	}
 	var parser expfmt.TextParser
 	metricFamilies, err := parser.TextToMetricFamilies(strings.NewReader(string(data)))
 	if err != nil {
-		common.LOG.Error("parser metrics failed", zap.Any("err:", err))
+		log.Logger.LogError("parser metrics failed", zap.Any("err: ", err))
 		return nil, err
 	}
 
@@ -126,7 +127,7 @@ func GetClusterInfo(c *kubernetes.Clientset) (*models.NodeStatus, error) {
 func getNodesRunningStatus(client *kubernetes.Clientset, status *models.NodeStatus) *models.NodeStatus {
 	nodes, err := client.CoreV1().Nodes().List(context.TODO(), v1.ListOptions{})
 	if err != nil {
-		common.LOG.Error("get node failed", zap.Any("err: ", err))
+		log.Logger.LogError("get node failed", zap.Any("err: ", err))
 		return nil
 	}
 
@@ -141,7 +142,7 @@ func getNodesRunningStatus(client *kubernetes.Clientset, status *models.NodeStat
 				notReadyNode++
 			}
 		} else {
-			common.LOG.Error("get node status failed")
+			log.Logger.LogError("get node status failed")
 			return nil
 		}
 	}
