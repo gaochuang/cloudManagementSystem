@@ -35,6 +35,7 @@ type Options struct {
 	GinEngine  *gin.Engine
 	ConfigFile string
 	Config     *config.Config
+	Factory    database.ShareFactory
 }
 
 func NewOptions() *Options {
@@ -174,6 +175,7 @@ func (o *Options) GormMysql() (err error) {
 		return
 	}
 
+	o.Factory = database.NewFactory(o.DB)
 	//初始化数据库表
 	if o.Config.System.AutoMigrateDb {
 		if err = database.MySqlTables(o.DB); err != nil {
@@ -205,8 +207,6 @@ func (o *Options) RunHttpServer() error {
 		}
 	}()
 	<-quit
-
-	fmt.Println("Shutting down server...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

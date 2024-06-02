@@ -6,6 +6,7 @@ import (
 	"github.com/gaochuang/cloudManagementSystem/common"
 	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
+	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/prometheus/common/expfmt"
 	"go.uber.org/zap"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -114,13 +115,13 @@ func GetClusterInfo(c *kubernetes.Clientset) (*models.NodeStatus, error) {
 			node.NodeCount = len(metricValue.Metric)
 		}
 	}
-	node.CpuCore = common.ParseFloat2F(kubePodContainerResourceRequestsCpuCores)
-	node.CpuUsage = common.ParseFloat2F(kubePodContainerResourceRequestsCpuCores / kubeNodeStatusCapacityCpuCores * 100)
-	node.CpuCapacityCore = common.ParseFloat2F(kubeNodeStatusCapacityCpuCores)
+	node.CpuCore = utils.ParseFloat2F(kubePodContainerResourceRequestsCpuCores)
+	node.CpuUsage = utils.ParseFloat2F(kubePodContainerResourceRequestsCpuCores / kubeNodeStatusCapacityCpuCores * 100)
+	node.CpuCapacityCore = utils.ParseFloat2F(kubeNodeStatusCapacityCpuCores)
 
-	node.MemoryUsed = common.ParseFloat2F(kubePodContainerResourceRequestsMemoryBytes / 1024 / 1024 / 1024)
-	node.MemoryUsage = common.ParseFloat2F(kubePodContainerResourceRequestsMemoryBytes / kubeNodeStatusAllocatableMemoryBytes * 100)
-	node.MemoryTotal = common.ParseFloat2F(kubeNodeStatusAllocatableMemoryBytes / 1024 / 1024 / 1024)
+	node.MemoryUsed = utils.ParseFloat2F(kubePodContainerResourceRequestsMemoryBytes / 1024 / 1024 / 1024)
+	node.MemoryUsage = utils.ParseFloat2F(kubePodContainerResourceRequestsMemoryBytes / kubeNodeStatusAllocatableMemoryBytes * 100)
+	node.MemoryTotal = utils.ParseFloat2F(kubeNodeStatusAllocatableMemoryBytes / 1024 / 1024 / 1024)
 	return &node, nil
 }
 

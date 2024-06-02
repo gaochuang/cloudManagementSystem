@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/api/routers"
 	"github.com/gaochuang/cloudManagementSystem/cmd/app/options"
+	"github.com/gaochuang/cloudManagementSystem/pkg/cms"
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
-	"os"
-
 	"github.com/spf13/cobra"
+	"os"
 )
 
 func NewServerCommand() *cobra.Command {
@@ -45,6 +45,7 @@ func NewServerCommand() *cobra.Command {
 }
 
 func run(opt *options.Options) error {
+	cms.Setup(opt)
 	initRouters(opt)
 	if err := opt.RunHttpServer(); err != nil {
 		return err
