@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gaochuang/cloudManagementSystem/cmd/app/config"
-	"github.com/gaochuang/cloudManagementSystem/database"
+	"github.com/gaochuang/cloudManagementSystem/pkg/database"
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"

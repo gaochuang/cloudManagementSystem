@@ -2,7 +2,7 @@ package cluster
 
 import (
 	"context"
-	"github.com/gaochuang/cloudManagementSystem/common"
+	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	"go.uber.org/zap"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -11,7 +11,7 @@ import (
 func GetClusterVersion(client *kubernetes.Clientset) (string, error) {
 	version, err := client.ServerVersion()
 	if err != nil {
-		common.LOG.Error("get version from cluster failed", zap.Any("err: ", err))
+		log.Logger.LogError("get version from cluster failed", zap.Any("err: ", err))
 		return "", err
 	}
 	return version.String(), nil

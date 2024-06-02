@@ -3,9 +3,9 @@ package cluster
 import (
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/api/response"
-	"github.com/gaochuang/cloudManagementSystem/common"
 	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/gaochuang/cloudManagementSystem/pkg/kubernetes/client"
+	"github.com/gaochuang/cloudManagementSystem/pkg/log"
 	cluster2 "github.com/gaochuang/cloudManagementSystem/pkg/server/service/cluster"
 	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"
@@ -18,7 +18,7 @@ func CreateK8SCluster(c *gin.Context) {
 	var cluster models.Cluster
 
 	if err := utils.CheckParameters(c, &cluster); err != nil {
-		common.LOG.Error("check cluster parameters fai`led")
+		log.Logger.LogError("check cluster parameters failed ", zap.Any("err:", err))
 		return
 	}
 
@@ -36,13 +36,13 @@ func CreateK8SCluster(c *gin.Context) {
 	count, err := GetClusterNodeCount(client)
 	if err != nil {
 		response.FailWithMessage(response.CreateK8SClusterError, "get cluster node count failed", c)
-		common.LOG.Error("get cluster node count failed", zap.Any("err", err))
+		log.Logger.LogError("get cluster node count failed ", zap.Any("err:", err))
 		return
 	}
 	cluster.NodeCount = count
 
 	if err = cluster2.StorageCluster(cluster); err != nil {
-		common.LOG.Error("storage cluster to db failed", zap.Any("err", err))
+		log.Logger.LogError("storage cluster to db failed ", zap.Any("err:", err))
 		response.FailWithMessage(response.CreateK8SClusterError, "storage cluster to db failed", c)
 		return
 	} else {
@@ -62,7 +62,7 @@ func ListK8sCluster(c *gin.Context) {
 	var clusters []models.Cluster
 
 	if err := cluster2.ListCluster(&query, &clusters); err != nil {
-		common.LOG.Error("get cluster failed", zap.Any("err", err))
+		log.Logger.LogError("get cluster failed ", zap.Any("err:", err))
 		response.FailWithMessage(response.InternalServerError, "get cluster failed", c)
 	} else {
 		response.OkWithDetailed(response.PageResult{
@@ -79,14 +79,14 @@ func GetK8SClusterConfig(c *gin.Context) {
 	clusterId := c.DefaultQuery("clusterId", "1")
 	id, err := strconv.ParseUint(clusterId, 10, 32)
 	if err != nil {
-		common.LOG.Error("cluster id is invalid", zap.Any("err", err))
+		log.Logger.LogError("cluster id is invalid ", zap.Any("err:", err))
 		response.FailWithMessage(response.InternalServerError, "cluster id is invalid", c)
 		return
 	}
 
 	clusterConfig, err := cluster2.GetCluster(uint(id))
 	if err != nil {
-		common.LOG.Error("get cluster config failed", zap.Any("err", err))
+		log.Logger.LogError("get cluster config failed ", zap.Any("err:", err))
 		response.FailWithMessage(response.InternalServerError, "get cluster config failed", c)
 		return
 	}
@@ -101,7 +101,7 @@ func DeleteK8SCluster(c *gin.Context) {
 	}
 	if err := cluster2.DeleteCluster(id); err != nil {
 		userName, _ := c.Get("username")
-		common.LOG.Error(fmt.Sprintf("user: %s, delete cluster failed", userName))
+		log.Logger.LogError(fmt.Sprintf("user: %s, delete cluster failed", userName))
 		response.FailWithMessage(response.InternalServerError, "delete cluster failed", c)
 		return
 	}

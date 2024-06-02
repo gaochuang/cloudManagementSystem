@@ -3,14 +3,14 @@ package cluster
 import (
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/api/response"
-	"github.com/gaochuang/cloudManagementSystem/common"
 	"github.com/gaochuang/cloudManagementSystem/pkg/kubernetes/client"
 	"github.com/gaochuang/cloudManagementSystem/pkg/server/service/cluster"
+	"github.com/gaochuang/cloudManagementSystem/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func GetEvents(ctx *gin.Context) {
-	namespace := common.ParseNamespaceParameter(ctx)
+	namespace := utils.ParseNamespaceParameter(ctx)
 	clusterClient, err := client.GetClusterClient(ctx)
 	if err != nil {
 		response.FailWithMessage(response.InternalServerError, err.Error(), ctx)
