@@ -21,6 +21,8 @@ type Configuration struct {
 }
 
 type LoggerInterface interface {
+	LogDebug(msg string, fields ...zap.Field)
+	LogDebugWithCtx(ctx context.Context, msg string, fields ...zap.Field)
 	LogInfo(msg string, fields ...zap.Field)
 	LogInfoWithCtx(ctx context.Context, msg string, fields ...zap.Field)
 	LogError(msg string, fields ...zap.Field)

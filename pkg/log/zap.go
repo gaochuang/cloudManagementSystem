@@ -81,6 +81,20 @@ func NewZapLogger(c *Configuration) (LoggerInterface, error) {
 	}, nil
 }
 
+func (zl *zapLogger) LogDebug(msg string, fields ...zap.Field) {
+	zl.logger.Debug(msg, fields...)
+}
+
+func (zl *zapLogger) LogDebugWithCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	if val := ctx.Value("X-Trace-Id"); val != nil {
+		if trace, ok := val.(string); ok {
+			zl.LogDebug(msg, append(fields, zap.String("traceId", trace))...)
+		}
+	} else {
+		zl.LogDebug(msg, fields...)
+	}
+}
+
 func (zl *zapLogger) LogInfo(msg string, fields ...zap.Field) {
 	zl.logger.Info(msg, fields...)
 }

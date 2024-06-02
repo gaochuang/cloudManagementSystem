@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/gaochuang/cloudManagementSystem/models/user"
+	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/golang-jwt/jwt/v4"
 	"time"
 )
@@ -15,7 +15,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func ReleaseToken(user user.User) (string, error) {
+func ReleaseToken(user models.User) (string, error) {
 	claims := &Claims{
 		ID:       user.ID,
 		Username: user.UserName,
