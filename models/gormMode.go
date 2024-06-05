@@ -12,8 +12,9 @@ const (
 	DateLocalTimeFormat = "2023-02-02"
 )
 
+// https://gorm.io/docs/models.html
 type Mode struct {
-	ID        uint `gorm:"primarykey;comment:'Self-increment numbering'" json:"id" form:"id"`
+	ID        uint `gorm:"primarykey;comment:'Self-increment numbering'" json:"id" form:"id"` //主键
 	CreatedAt LocalTime
 	UpdatedAt LocalTime
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`

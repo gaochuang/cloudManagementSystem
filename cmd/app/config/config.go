@@ -36,6 +36,7 @@ type LogOptions struct {
 type HttpOptions struct {
 	Addr string `mapstructure:"addr" json:"addr" yaml:"addr"`
 	Port int    `mapstructure:"port" json:"port" yaml:"port"`
+	Jwt  string `mapstructure:"jwt" json:"jwt" yaml:"jwt"`
 }
 
 type Config struct {

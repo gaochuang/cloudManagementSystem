@@ -9,6 +9,7 @@ type User struct {
 	UserName string `gorm:"column:username;comment:'user name'" json:"userName"`
 	Password string `gorm:"column:password;comment:'user password'" json:"password"`
 	Status   *bool  `gorm:"type:tinyint(1);default:true;comment:'user status(enable/disable)'"`
+	Role     Role   `gorm:"foreignkey:RoleId" json:"role"`
 }
 
 type LoginUser struct {

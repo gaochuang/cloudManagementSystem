@@ -1,10 +1,12 @@
 package response
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
+// PageResult represents paginated response data
 type PageResult struct {
 	Data  interface{} `json:"data"`
 	Total int64       `json:"total"`
@@ -12,6 +14,7 @@ type PageResult struct {
 	Size  int         `json:"pageSize"`
 }
 
+// Error codes
 const (
 	SUCCESS = iota + 1000
 	ERROR
@@ -20,12 +23,12 @@ const (
 	UserRegisterFail
 	UserNameEmpty
 	UserPassEmpty
-
-	InternalServerError = http.StatusInternalServerError
-
+	UserDisable
+	InternalServerError   = http.StatusInternalServerError
 	CreateK8SClusterError = iota + 2000
 )
 
+// Error messages
 const (
 	OkMsg                    = "operation success"
 	NoOkMsg                  = "operation failed"
@@ -34,17 +37,20 @@ const (
 	UserRegisterErrorMsg     = "user register failed"
 	UserNameIsEmptyMsg       = "user name is empty"
 	UserPasswordIsEmptyMsg   = "user password is empty"
+	UserDisableMsg           = "user has been disabled"
 	InternalServerErrorMsg   = "server internal error"
 	CreateK8SClusterErrorMsg = "create kubernetes cluster failed"
 )
 
-type response struct {
+// Response represents the structure of an API response
+type Response struct {
 	ErrCode int         `json:"errCode"`
 	Data    interface{} `json:"data"`
-	Msg     string      `json:"msg"`
-	ErrMsg  string      `json:"errMsg"`
+	Msg     string      `json:"msg,omitempty"`
+	ErrMsg  string      `json:"errMsg,omitempty"`
 }
 
+// customError maps error codes to error messages
 var customError = map[int]string{
 	SUCCESS:               OkMsg,
 	ERROR:                 NoOkMsg,
@@ -57,32 +63,31 @@ var customError = map[int]string{
 	CreateK8SClusterError: CreateK8SClusterErrorMsg,
 }
 
-func ResultOk(code int, data interface{}, msg string, ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, response{
+// Result sends a JSON response with the given status, data, and message
+func Result(code int, data interface{}, msg string, ctx *gin.Context) {
+	if msg == "" {
+		msg = customError[code]
+	}
+	ctx.JSON(http.StatusOK, Response{
 		ErrCode: code,
 		Data:    data,
-		Msg:     msg,
+		ErrMsg:  msg,
 	})
 }
 
-func ResultFail(code int, data interface{}, msg string, ctx *gin.Context) {
-	if msg == "" {
-		ctx.JSON(http.StatusOK, response{
-			ErrCode: code,
-			Data:    data,
-			ErrMsg:  customError[code],
-		})
-	} else {
-		ctx.JSON(http.StatusOK, response{
-			ErrCode: code,
-			Data:    data,
-			ErrMsg:  msg,
-		})
-	}
+// ResultOk sends a successful JSON response
+func ResultOk(code int, data interface{}, msg string, ctx *gin.Context) {
+	Result(code, data, msg, ctx)
 }
 
+// ResultFail sends a failed JSON response
+func ResultFail(code int, data interface{}, msg string, ctx *gin.Context) {
+	Result(code, data, msg, ctx)
+}
+
+// Convenience functions for sending standard responses
 func Ok(c *gin.Context) {
-	ResultOk(SUCCESS, map[string]interface{}{}, "success", c)
+	ResultOk(SUCCESS, map[string]interface{}{}, OkMsg, c)
 }
 
 func OkWithMessage(message string, c *gin.Context) {
@@ -90,7 +95,7 @@ func OkWithMessage(message string, c *gin.Context) {
 }
 
 func OkWithData(data interface{}, c *gin.Context) {
-	ResultOk(SUCCESS, data, "success", c)
+	ResultOk(SUCCESS, data, OkMsg, c)
 }
 
 func OkWithDetailed(data interface{}, message string, c *gin.Context) {
@@ -98,7 +103,7 @@ func OkWithDetailed(data interface{}, message string, c *gin.Context) {
 }
 
 func Fail(c *gin.Context) {
-	ResultFail(ERROR, map[string]interface{}{}, "failed", c)
+	ResultFail(ERROR, map[string]interface{}{}, NoOkMsg, c)
 }
 
 func FailWithMessage(code int, message string, c *gin.Context) {
