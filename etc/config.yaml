@@ -2,6 +2,7 @@
 http:
   addr: 'localhost'
   port: 58888
+  jwt: "platform"
 
 # zap logger configuration
 zap:
