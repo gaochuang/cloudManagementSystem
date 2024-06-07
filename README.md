@@ -80,3 +80,7 @@
 ### 命令批量发送
 - 支持批量发送命令到多个节点。
 - 提供命令执行结果的收集和分析。
+
+## API 文档
+
+有关更多详细的 API 规范，请参阅我们的 [API 文档](./doc/API/kubernetes_management_system.openapi.md)。
