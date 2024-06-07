@@ -8,7 +8,6 @@ import (
 )
 
 func InitializePublicRoutes(engine *gin.Engine) {
-	engine.Use(middleware.CoreMiddleware())
 	guest := engine.Group("/api/v1/platform")
 	{
 		guest.GET("/ping", func(c *gin.Context) {
@@ -29,10 +28,11 @@ func InitializePublicRoutes(engine *gin.Engine) {
 	engine.GET("/metrics", gin.WrapH(promhttp.Handler()))
 }
 
-func InitUserRouter(engin *gin.Engine) {
-	g := engin.Group("/api/v1/user")
+func InitUserRouter(engine *gin.Engine) {
+	engine.Use(middleware.CoreMiddleware(), middleware.AuthMiddleware())
+	g := engine.Group("/api/v1/user")
 	{
-		g.GET("info", user.UserInfo)
+		g.GET("list", user.GetUsers)
 	}
 
 }

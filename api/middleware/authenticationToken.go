@@ -1,8 +1,7 @@
 package middleware
 
 import (
-	"github.com/gaochuang/cloudManagementSystem/common"
-	"github.com/gaochuang/cloudManagementSystem/models"
+	"github.com/gaochuang/cloudManagementSystem/pkg/cms"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -16,38 +15,38 @@ func AuthMiddleware() gin.HandlerFunc {
 		} else {
 			tokenString := ctx.GetHeader("token")
 			if "" == tokenString || strings.HasPrefix(tokenString, "jwt") {
-				ctx.JSON(http.StatusUnauthorized, gin.H{"errcode": 401, "errmsg": "not logged in or illegally accessed"})
+				ctx.JSON(http.StatusUnauthorized, gin.H{"error code": 401, "error message": "not logged in or illegally accessed"})
 				ctx.Abort()
 				return
 			}
-			//tokenString = tokenString[4:] //jwt:
 			decodeToken(tokenString, ctx)
 		}
 	}
 }
 
 func decodeToken(token string, ctx *gin.Context) {
-	tk, claims, err := common.ParseToken(token)
+	tk, claims, err := cms.CoreV1.User().ParseToken(ctx, token, cms.CoreV1.User().GetJwt(ctx))
 	if err != nil || !tk.Valid {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"errcode": 401, "errmsg": "authorization has expired"})
+		ctx.JSON(http.StatusAccepted, gin.H{"error code": 400, "error message": "authorization has expired"})
 		ctx.Abort()
 		return
 	}
 
-	var u models.User
-
-	err = common.DB.Where("userName = ? ", claims.Username).First(&u).Error
+	user, err := cms.CoreV1.User().GetUserByName(ctx, claims.Username)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"errcode": 401, "errmsg": "authentication failed"})
+		ctx.JSON(http.StatusOK, gin.H{"error code": 403, "error message": "authentication failed"})
+		ctx.Abort()
+		return
 	}
 
-	ctx.Set("user", u)
+	if !*user.Status {
+		ctx.JSON(http.StatusOK, gin.H{"error core": 403, "error message": "user disabled"})
+		ctx.Abort()
+		return
+	}
+
+	ctx.Set("user", user)
+	ctx.Set("username", user.UserName)
 	ctx.Set("claims", claims)
 	ctx.Next()
-}
-
-func authentication(loginUser *models.LoginUser) (models.User, error) {
-	var user models.User
-	err := common.DB.Where("userName = ? ", loginUser.UserName).First(&user).Error
-	return user, err
 }
