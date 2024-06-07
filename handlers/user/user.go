@@ -3,7 +3,6 @@ package user
 import (
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/api/response"
-	"github.com/gaochuang/cloudManagementSystem/common"
 	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/gaochuang/cloudManagementSystem/pkg/cms"
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
@@ -16,16 +15,17 @@ import (
 
 func Register(ctx *gin.Context) {
 	var user models.User
+
 	err := utils.CheckParameters(ctx, &user)
 	if err != nil {
+		log.Logger.LogError("check parameters failed")
 		response.FailWithMessage(response.ParamError, response.ParamErrorMsg, ctx)
 		return
 	}
 
-	password, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MinCost)
-	user.Password = string(password)
 	if data, err := cms.CoreV1.User().Create(ctx.Request.Context(), &user); err != nil {
 		log.Logger.LogError("register failed: ", zap.Any("user: ", user.UserName), zap.Any("err: ", err))
+		response.FailWithMessage(response.UserRegisterFail, err.Error(), ctx)
 	} else {
 		response.ResultOk(0, data, "register success", ctx)
 	}
@@ -34,14 +34,8 @@ func Register(ctx *gin.Context) {
 func Login(ctx *gin.Context) {
 	var loginUser models.LoginUser
 	if err := utils.CheckParameters(ctx, &loginUser); err != nil {
-		return
-	}
-	if loginUser.UserName == "" {
-		response.FailWithMessage(response.UserNameEmpty, response.ParamErrorMsg, ctx)
-		return
-	}
-	if loginUser.Password == "" {
-		response.FailWithMessage(response.UserPassEmpty, response.UserPasswordIsEmptyMsg, ctx)
+		log.Logger.LogError("check parameters failed")
+		response.FailWithMessage(response.ParamError, response.ParamErrorMsg, ctx)
 		return
 	}
 
@@ -55,7 +49,8 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(user.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginUser.Password)); err != nil {
+		log.Logger.LogWarn("compare password failed: ", zap.Any("err: ", err.Error()))
 		response.FailWithMessage(response.AuthError, response.LoginCheckErrorMsg, ctx)
 		return
 	}
@@ -71,13 +66,7 @@ func Login(ctx *gin.Context) {
 	response.OkWithDetailed(gin.H{"token": token, "username": user.UserName, "role": user.Role}, "login success", ctx)
 }
 
-func UserInfo(ctx *gin.Context) {
+func GetUsers(ctx *gin.Context) {
 	user, _ := ctx.Get("user")
 	ctx.JSON(http.StatusOK, gin.H{"errcode": 0, "data": gin.H{"user": user}})
-}
-
-func authentication(loginUser *models.LoginUser) (models.User, error) {
-	var user models.User
-	err := common.DB.Where("userName = ? ", loginUser.UserName).First(&user).Error
-	return user, err
 }

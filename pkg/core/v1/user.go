@@ -25,6 +25,7 @@ type UserInterface interface {
 	GetJwt(ctx context.Context) []byte
 	GetUserByName(ctx context.Context, userName string) (userDate *models.User, err error)
 	ReleaseToken(ctx context.Context, user *models.User, jwtKey []byte) (token string, err error)
+	ParseToken(ctx context.Context, token string, jwtKey []byte) (*jwt.Token, *internal.JwtCustomClaims, error)
 }
 
 type user struct {
@@ -40,12 +41,12 @@ func newUser(p *platform) UserInterface {
 }
 
 func (u *user) Create(ctx context.Context, user *models.User) (userData *models.User, err error) {
-	password, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Logger.LogError("genera password failed", zap.Any("err: ", err))
 		return nil, err
 	}
-	user.Password = string(password)
+	user.Password = string(hashPassword)
 	if userData, err = u.factory.User().Create(ctx, user); err != nil {
 		log.Logger.LogDebugWithCtx(ctx, "user register failed", zap.String("user name", user.UserName), zap.Error(err))
 		return nil, err
@@ -63,7 +64,7 @@ func (u *user) GetJwt(ctx context.Context) []byte {
 
 func (u *user) GetUserByName(ctx context.Context, userName string) (userDate *models.User, err error) {
 	if userDate, err = u.factory.User().GetUserByUserName(ctx, userName); err != nil {
-		log.Logger.LogErrorWithCtx(ctx, "get user errot", zap.Any("user name", userName))
+		log.Logger.LogErrorWithCtx(ctx, "get user error", zap.Any("user name", userName))
 		return nil, err
 	}
 	return userDate, nil
@@ -79,7 +80,7 @@ func (u *user) ReleaseToken(ctx context.Context, user *models.User, jwtKey []byt
 			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
 			Issuer:    "platform",
-			Subject:   "user tokern",
+			Subject:   "user token",
 		},
 	}
 	jwtKeyToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
@@ -88,4 +89,15 @@ func (u *user) ReleaseToken(ctx context.Context, user *models.User, jwtKey []byt
 		return "", err
 	}
 	return token, nil
+}
+
+func (u *user) ParseToken(ctx context.Context, token string, jwtKey []byte) (*jwt.Token, *internal.JwtCustomClaims, error) {
+	claims := &internal.JwtCustomClaims{}
+	tokenKey, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil || !tokenKey.Valid {
+		return nil, nil, err
+	}
+	return tokenKey, claims, nil
 }
