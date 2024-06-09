@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"errors"
 	"github.com/gaochuang/cloudManagementSystem/cmd/app/config"
 	"github.com/gaochuang/cloudManagementSystem/internal"
 	"github.com/gaochuang/cloudManagementSystem/models"
@@ -41,6 +42,10 @@ func newUser(p *platform) UserInterface {
 }
 
 func (u *user) Create(ctx context.Context, user *models.User) (userData *models.User, err error) {
+	if user.UserName == "" || user.Password == "" {
+		log.Logger.LogWarn("user name or password is empty")
+		return nil, errors.New("user name or password is empty")
+	}
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Logger.LogError("genera password failed", zap.Any("err: ", err))

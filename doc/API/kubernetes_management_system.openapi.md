@@ -234,39 +234,24 @@ POST /api/v1/user/register
 
 # 数据模型
 
-<h2 id="tocS_Tag">Tag</h2>
+<h2 id="tocS_Users">Users</h2>
 
-<a id="schematag"></a>
-<a id="schema_Tag"></a>
-<a id="tocStag"></a>
-<a id="tocstag"></a>
-
-```json
-{
-  "id": 1,
-  "name": "string"
-}
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|id|integer(int64)|false|none||标签ID编号|
-|name|string|false|none||标签名称|
-
-<h2 id="tocS_Category">Category</h2>
-
-<a id="schemacategory"></a>
-<a id="schema_Category"></a>
-<a id="tocScategory"></a>
-<a id="tocscategory"></a>
+<a id="schemausers"></a>
+<a id="schema_Users"></a>
+<a id="tocSusers"></a>
+<a id="tocsusers"></a>
 
 ```json
 {
   "id": 1,
-  "name": "string"
+  "created_at": "2019-08-24T14:15:22Z",
+  "updated_at": "2019-08-24T14:15:22Z",
+  "deleted_at": "2019-08-24T14:15:22Z",
+  "uid": "string",
+  "username": "string",
+  "password": "string",
+  "status": "1",
+  "role_id": 4294967296
 }
 
 ```
