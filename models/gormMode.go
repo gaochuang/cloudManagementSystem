@@ -29,22 +29,24 @@ type LocalTime struct {
 }
 
 func (t *LocalTime) UnmarshalJSON(data []byte) (err error) {
+	//“”空值不用解析
 	if len(data) == 2 {
 		*t = LocalTime{Time: time.Time{}}
 		return
 	}
 
+	//按照指定格式解析
 	now, err := time.Parse(`"`+SecLocalTimeFormat+`"`, string(data))
 	*t = LocalTime{Time: now}
 	return
 }
 
-func (t LocalTime) MarshalJSON() ([]byte, error) {
+func (t *LocalTime) MarshalJSON() ([]byte, error) {
 	output := fmt.Sprintf("\"%s\"", t.Format(SecLocalTimeFormat))
 	return []byte(output), nil
 }
 
-func (t LocalTime) Value() (driver.Value, error) {
+func (t *LocalTime) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	if t.UnixNano() == zeroTime.UnixNano() {
 		return nil, nil
@@ -61,6 +63,10 @@ func (t *LocalTime) Scan(v interface{}) error {
 	return fmt.Errorf("can not convert %v to LocalTime", v)
 }
 
-func (t LocalTime) DateString() string {
+func (t *LocalTime) String() string {
+	return t.Format(SecLocalTimeFormat)
+}
+
+func (t *LocalTime) DateString() string {
 	return t.Format(DateLocalTimeFormat)
 }
