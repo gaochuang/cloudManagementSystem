@@ -14,9 +14,9 @@ const (
 
 // https://gorm.io/docs/models.html
 type Mode struct {
-	ID        uint `gorm:"primarykey;comment:'Self-increment numbering'" json:"id" form:"id"` //主键
-	CreatedAt LocalTime
-	UpdatedAt LocalTime
+	ID        uint           `gorm:"primarykey;comment:'Self-increment numbering'" json:"id" form:"id"` //主键
+	CreatedAt LocalTime      `json:"createdAt,omitempty"`
+	UpdatedAt LocalTime      `json:"updatedAt,omitempty"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
