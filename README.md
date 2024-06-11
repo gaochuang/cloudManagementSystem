@@ -12,7 +12,7 @@
 ![架构图](./doc/arch.jpg)
 
 ### 功能文档
-有关更多详细的功能规范，请参阅 [功能文档](./doc/function.md)。
+有关更多详细的功能规范，请参阅 [功能文档](./doc/funtions.md)。
 
 ### API 文档
 有关更多详细的 API 规范，请参阅 [API 文档](./doc/API/kubernetes_management_system.openapi.md)。
