@@ -18,6 +18,11 @@ type LoginUser struct {
 	Password string `json:"password"`
 }
 
+type ChangePasswordRequest struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
 func (u *User) TableName() string {
 	return u.Mode.TableName("users")
 }

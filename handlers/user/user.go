@@ -70,3 +70,19 @@ func GetUsers(ctx *gin.Context) {
 	user, _ := ctx.Get("user")
 	ctx.JSON(http.StatusOK, gin.H{"errcode": 0, "data": gin.H{"user": user}})
 }
+
+func ChangePassword(ctx *gin.Context) {
+	var cp models.ChangePasswordRequest
+
+	if err := utils.CheckParameters(ctx, &cp); err != nil {
+		response.FailWithMessage(response.ParamError, response.ParamErrorMsg, ctx)
+		return
+	}
+
+	name := cms.CoreV1.User().GetUserNameByContext(ctx)
+
+	if err := cms.CoreV1.User().ChangePassword(ctx.Request.Context(), name, cp.OldPassword, cp.NewPassword); err != nil {
+		response.FailWithMessage(response.ERROR, err.Error(), ctx)
+	}
+	response.Ok(ctx)
+}
