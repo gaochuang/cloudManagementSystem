@@ -8,6 +8,7 @@ import (
 	"github.com/gaochuang/cloudManagementSystem/models"
 	"github.com/gaochuang/cloudManagementSystem/pkg/database"
 	"github.com/gaochuang/cloudManagementSystem/pkg/log"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
@@ -25,8 +26,10 @@ type UserInterface interface {
 	Create(ctx context.Context, user *models.User) (userData *models.User, err error)
 	GetJwt(ctx context.Context) []byte
 	GetUserByName(ctx context.Context, userName string) (userDate *models.User, err error)
+	GetUserNameByContext(ctx *gin.Context) string
 	ReleaseToken(ctx context.Context, user *models.User, jwtKey []byte) (token string, err error)
 	ParseToken(ctx context.Context, token string, jwtKey []byte) (*jwt.Token, *internal.JwtCustomClaims, error)
+	ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error
 }
 
 type user struct {
@@ -105,4 +108,17 @@ func (u *user) ParseToken(ctx context.Context, token string, jwtKey []byte) (*jw
 		return nil, nil, err
 	}
 	return tokenKey, claims, nil
+}
+
+func (u *user) GetUserNameByContext(ctx *gin.Context) string {
+	if value, exists := ctx.Get("user"); !exists {
+		return "None"
+	} else {
+		user := value.(*models.User)
+		return user.UserName
+	}
+}
+
+func (u *user) ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error {
+	return u.factory.User().ChangePassword(ctx, name, oldPassword, newPassword)
 }

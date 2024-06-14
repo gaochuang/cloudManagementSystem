@@ -34,6 +34,7 @@ func InitUserRouter(engine *gin.Engine) {
 	g := engine.Group("/api/v1/user")
 	{
 		g.GET("list", user.GetUsers)
+		g.POST("changePwd", user.ChangePassword)
 	}
 
 }
