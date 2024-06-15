@@ -83,4 +83,4 @@
 
 ## API 文档
 
-有关更多详细的 API 规范，请参阅我们的 [API 文档](./doc/API/kubernetes_management_system.openapi.html)。
+有关更多详细的 API 规范，请参阅我们的 [API 文档](https://gaochuang.github.io/cloudManagementSystem/doc/API/cloudManagementSystem.html)。
