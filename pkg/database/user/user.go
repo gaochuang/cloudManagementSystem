@@ -9,17 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserInterface interface {
+type UsersInterface interface {
 	Create(ctx context.Context, user *models.User) (userData *models.User, err error)
 	GetUserByUserName(ctx context.Context, username string) (us *models.User, err error)
 	ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error
+	GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error)
 }
 
 type user struct {
 	db *gorm.DB
 }
 
-func NewUser(db *gorm.DB) UserInterface {
+func NewUser(db *gorm.DB) UsersInterface {
 	return &user{
 		db: db,
 	}
@@ -43,19 +44,26 @@ func (u *user) GetUserByUserName(ctx context.Context, username string) (us *mode
 
 func (u *user) ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error {
 	us, err := u.GetUserByUserName(ctx, name)
-	if nil != us {
+	if nil != err {
 		return err
 	}
-
 	if err := bcrypt.CompareHashAndPassword([]byte(us.Password), []byte(oldPassword)); err != nil {
 		return errors.New("old password is incorrect")
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost);
+	fmt.Println("____us.Password__: ", us.Password)
+
+	password, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
 	return u.db.Model(&models.User{}).Where("username = ?", name).Update("password", string(password)).Error
+}
 
+func (u *user) GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error) {
+	if err := u.db.Model(&models.User{}).Omit("password").Find(&userList).Error; err != nil {
+		return nil, err
+	}
+	return userList, nil
 }

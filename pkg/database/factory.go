@@ -6,7 +6,7 @@ import (
 )
 
 type ShareFactory interface {
-	User() user.UserInterface
+	User() user.UsersInterface
 }
 
 type shareFactory struct {
@@ -19,6 +19,6 @@ func NewFactory(db *gorm.DB) ShareFactory {
 	}
 }
 
-func (s *shareFactory) User() user.UserInterface {
+func (s *shareFactory) User() user.UsersInterface {
 	return user.NewUser(s.db)
 }

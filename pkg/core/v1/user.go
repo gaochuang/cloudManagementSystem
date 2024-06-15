@@ -19,10 +19,10 @@ import (
 //https://github.com/kubernetes/client-go/blob/master/kubernetes/typed/core/v1/core_client.go
 
 type UserGetter interface {
-	User() UserInterface
+	User() UsersInterface
 }
 
-type UserInterface interface {
+type UsersInterface interface {
 	Create(ctx context.Context, user *models.User) (userData *models.User, err error)
 	GetJwt(ctx context.Context) []byte
 	GetUserByName(ctx context.Context, userName string) (userDate *models.User, err error)
@@ -30,6 +30,7 @@ type UserInterface interface {
 	ReleaseToken(ctx context.Context, user *models.User, jwtKey []byte) (token string, err error)
 	ParseToken(ctx context.Context, token string, jwtKey []byte) (*jwt.Token, *internal.JwtCustomClaims, error)
 	ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error
+	GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error)
 }
 
 type user struct {
@@ -37,7 +38,7 @@ type user struct {
 	factory database.ShareFactory
 }
 
-func newUser(p *platform) UserInterface {
+func newUser(p *platform) UsersInterface {
 	return &user{
 		config:  p.config,
 		factory: p.factory,
@@ -112,7 +113,7 @@ func (u *user) ParseToken(ctx context.Context, token string, jwtKey []byte) (*jw
 
 func (u *user) GetUserNameByContext(ctx *gin.Context) string {
 	if value, exists := ctx.Get("user"); !exists {
-		return "None"
+		return ""
 	} else {
 		user := value.(*models.User)
 		return user.UserName
@@ -121,4 +122,8 @@ func (u *user) GetUserNameByContext(ctx *gin.Context) string {
 
 func (u *user) ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error {
 	return u.factory.User().ChangePassword(ctx, name, oldPassword, newPassword)
+}
+
+func (u *user) GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error) {
+	return u.factory.User().GetUsers(ctx)
 }

@@ -23,6 +23,6 @@ func New(config config.Config, factory database.ShareFactory) CoreV1Interface {
 	}
 }
 
-func (p *platform) User() UserInterface {
+func (p *platform) User() UsersInterface {
 	return newUser(p)
 }

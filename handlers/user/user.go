@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
 )
 
 func Register(ctx *gin.Context) {
@@ -67,20 +66,23 @@ func Login(ctx *gin.Context) {
 }
 
 func GetUsers(ctx *gin.Context) {
-	user, _ := ctx.Get("user")
-	ctx.JSON(http.StatusOK, gin.H{"errcode": 0, "data": gin.H{"user": user}})
+	useList, err := cms.CoreV1.User().GetUsers(ctx.Request.Context())
+	if err != nil {
+		response.Fail(ctx)
+		return
+	}
+
+	response.OkWithData(useList, ctx)
 }
 
 func ChangePassword(ctx *gin.Context) {
-	var cp models.ChangePasswordRequest
+	var cp models.UsersChangePasswordRequest
 
 	if err := utils.CheckParameters(ctx, &cp); err != nil {
 		response.FailWithMessage(response.ParamError, response.ParamErrorMsg, ctx)
 		return
 	}
-
 	name := cms.CoreV1.User().GetUserNameByContext(ctx)
-
 	if err := cms.CoreV1.User().ChangePassword(ctx.Request.Context(), name, cp.OldPassword, cp.NewPassword); err != nil {
 		response.FailWithMessage(response.ERROR, err.Error(), ctx)
 	}

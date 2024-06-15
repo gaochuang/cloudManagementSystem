@@ -8,6 +8,7 @@ import (
 )
 
 func InitializePublicRoutes(engine *gin.Engine) {
+	engine.Use(middleware.CoreMiddleware())
 	guest := engine.Group("/api/v1/platform")
 	{
 		guest.GET("/ping", func(c *gin.Context) {
@@ -29,12 +30,10 @@ func InitializePublicRoutes(engine *gin.Engine) {
 }
 
 func InitUserRouter(engine *gin.Engine) {
-	//gin.Recovery() 当程序中出现未知异常，返回http code 500
-	engine.Use(gin.Recovery(), middleware.CoreMiddleware(), middleware.AuthMiddleware(), middleware.MetricsExportMiddleware())
 	g := engine.Group("/api/v1/user")
 	{
 		g.GET("list", user.GetUsers)
-		g.POST("changePwd", user.ChangePassword)
+		g.POST("changePassword", user.ChangePassword)
 	}
 
 }
