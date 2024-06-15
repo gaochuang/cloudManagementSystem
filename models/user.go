@@ -18,9 +18,15 @@ type LoginUser struct {
 	Password string `json:"password"`
 }
 
-type ChangePasswordRequest struct {
+type UsersChangePasswordRequest struct {
 	OldPassword string `json:"old_password"`
 	NewPassword string `json:"new_password"`
+}
+
+type UsersListResponse struct {
+	ID       int    `gorm:"column:id" json:"id"`
+	UID      string `gorm:"column:uid" json:"uid"`
+	UserName string `gorm:"column:username" json:"username"`
 }
 
 func (u *User) TableName() string {

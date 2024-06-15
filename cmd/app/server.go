@@ -3,6 +3,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/gaochuang/cloudManagementSystem/api/middleware"
 	"github.com/gaochuang/cloudManagementSystem/api/routers"
 	"github.com/gaochuang/cloudManagementSystem/cmd/app/options"
 	"github.com/gaochuang/cloudManagementSystem/pkg/cms"
@@ -55,5 +56,6 @@ func run(opt *options.Options) error {
 
 func initRouters(opt *options.Options) {
 	routers.InitializePublicRoutes(opt.GinEngine)
+	middleware.InitMiddlewares(opt.GinEngine)
 	routers.InitUserRouter(opt.GinEngine)
 }
