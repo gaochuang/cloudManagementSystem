@@ -88,3 +88,20 @@ func ChangePassword(ctx *gin.Context) {
 	}
 	response.Ok(ctx)
 }
+
+func DeleteUsers(ctx *gin.Context) {
+	var userIds models.DeleteUsersRequest
+
+	if err := utils.CheckParameters(ctx, &userIds); err != nil {
+		response.FailWithMessage(response.ParamError, response.ParamErrorMsg, ctx)
+		return
+	}
+
+	if err := cms.CoreV1.User().DeleteUsers(ctx.Request.Context(), userIds); err != nil {
+		response.FailWithMessage(response.ERROR, err.Error(), ctx)
+		return
+	}
+
+	response.Ok(ctx)
+
+}

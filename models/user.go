@@ -23,6 +23,9 @@ type UsersChangePasswordRequest struct {
 	NewPassword string `json:"new_password"`
 }
 
+type DeleteUsersRequest struct {
+	Ids []int `json:"ids"`
+}
 type UsersListResponse struct {
 	ID       int    `gorm:"column:id" json:"id"`
 	UID      string `gorm:"column:uid" json:"uid"`
