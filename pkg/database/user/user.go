@@ -14,6 +14,7 @@ type UsersInterface interface {
 	GetUserByUserName(ctx context.Context, username string) (us *models.User, err error)
 	ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error
 	GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error)
+	DeleteUsers(ctx context.Context, request models.DeleteUsersRequest) error
 }
 
 type user struct {
@@ -24,6 +25,19 @@ func NewUser(db *gorm.DB) UsersInterface {
 	return &user{
 		db: db,
 	}
+}
+
+func (u *user) checkUserExist(ctx context.Context, userIds []int) error {
+	var count int64
+	if err := u.db.Model(&models.User{}).Where("id in ?", userIds).Count(&count).Error; err != nil {
+		return err
+	}
+
+	if count != int64(len(userIds)) {
+		return errors.New("some users does not exist")
+	}
+
+	return nil
 }
 
 func (u *user) Create(ctx context.Context, user *models.User) (us *models.User, err error) {
@@ -66,4 +80,11 @@ func (u *user) GetUsers(ctx context.Context) (userList []*models.UsersListRespon
 		return nil, err
 	}
 	return userList, nil
+}
+
+func (u *user) DeleteUsers(ctx context.Context, request models.DeleteUsersRequest) error {
+	if err := u.checkUserExist(ctx, request.Ids); err != nil {
+		return err
+	}
+	return u.db.Where("id in ?", request.Ids).Delete(&models.User{}).Error
 }

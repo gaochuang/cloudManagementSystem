@@ -31,6 +31,7 @@ type UsersInterface interface {
 	ParseToken(ctx context.Context, token string, jwtKey []byte) (*jwt.Token, *internal.JwtCustomClaims, error)
 	ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error
 	GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error)
+	DeleteUsers(ctx context.Context, request models.DeleteUsersRequest) error
 }
 
 type user struct {
@@ -126,4 +127,9 @@ func (u *user) ChangePassword(ctx context.Context, name string, oldPassword stri
 
 func (u *user) GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error) {
 	return u.factory.User().GetUsers(ctx)
+}
+
+func (u *user) DeleteUsers(ctx context.Context, request models.DeleteUsersRequest) error {
+
+	return u.factory.User().DeleteUsers(ctx, request)
 }
