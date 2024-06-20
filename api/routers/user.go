@@ -35,5 +35,7 @@ func InitUserRouter(engine *gin.Engine) {
 		g.GET("list", user.GetUsers)
 		g.POST("changePassword", user.ChangePassword)
 		g.DELETE("", user.DeleteUsers)
+		g.POST("update", user.UpdateUser)
+
 	}
 }

@@ -14,8 +14,8 @@ type User struct {
 }
 
 type LoginUser struct {
-	UserName string `json:"username"`
-	Password string `json:"password"`
+	UserName string `json:"username",binding:"required"`
+	Password string `json:"password",binding:"required"`
 }
 
 type UsersChangePasswordRequest struct {
@@ -25,6 +25,11 @@ type UsersChangePasswordRequest struct {
 
 type DeleteUsersRequest struct {
 	Ids []int `json:"ids"`
+}
+
+type UserRequest struct {
+	UserName string `json:"username",binding:"required"`
+	Status   *bool  `json:"status",binding:"required"`
 }
 type UsersListResponse struct {
 	ID       int    `gorm:"column:id" json:"id"`

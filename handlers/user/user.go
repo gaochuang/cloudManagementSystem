@@ -14,7 +14,6 @@ import (
 
 func Register(ctx *gin.Context) {
 	var user models.User
-
 	err := utils.CheckParameters(ctx, &user)
 	if err != nil {
 		log.Logger.LogError("check parameters failed")
@@ -53,15 +52,12 @@ func Login(ctx *gin.Context) {
 		response.FailWithMessage(response.AuthError, response.LoginCheckErrorMsg, ctx)
 		return
 	}
-
 	jwtKey := cms.CoreV1.User().GetJwt(ctx)
-
 	token, err := cms.CoreV1.User().ReleaseToken(ctx.Request.Context(), user, jwtKey)
 	if err != nil {
 		log.Logger.LogError("token generate failed", zap.Any("err: ", err))
 		response.FailWithMessage(response.InternalServerError, fmt.Sprintf("token genetate err: %v", err), ctx)
 	}
-
 	response.OkWithDetailed(gin.H{"token": token, "username": user.UserName, "role": user.Role}, "login success", ctx)
 }
 
@@ -71,7 +67,6 @@ func GetUsers(ctx *gin.Context) {
 		response.Fail(ctx)
 		return
 	}
-
 	response.OkWithData(useList, ctx)
 }
 
@@ -101,7 +96,24 @@ func DeleteUsers(ctx *gin.Context) {
 		response.FailWithMessage(response.ERROR, err.Error(), ctx)
 		return
 	}
-
 	response.Ok(ctx)
+}
 
+func UpdateUser(ctx *gin.Context) {
+	var userRequest models.UserRequest
+	if err := utils.CheckParameters(ctx, &userRequest); err != nil {
+		response.FailWithMessage(response.ParamError, response.ParamErrorMsg, ctx)
+		return
+	}
+	user, err := cms.CoreV1.User().GetUserByName(ctx.Request.Context(), userRequest.UserName)
+	if err != nil {
+		response.FailWithMessage(response.ERROR, err.Error(), ctx)
+		return
+	}
+	user.Status = userRequest.Status
+	if err := cms.CoreV1.User().Update(ctx.Request.Context(), user.ID, user); err != nil {
+		response.FailWithMessage(response.ParamError, "update user status failed", ctx)
+		return
+	}
+	response.Ok(ctx)
 }

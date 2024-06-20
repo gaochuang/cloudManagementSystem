@@ -32,6 +32,7 @@ type UsersInterface interface {
 	ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error
 	GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error)
 	DeleteUsers(ctx context.Context, request models.DeleteUsersRequest) error
+	Update(ctx context.Context, id uint, user *models.User) error
 }
 
 type user struct {
@@ -130,6 +131,9 @@ func (u *user) GetUsers(ctx context.Context) (userList []*models.UsersListRespon
 }
 
 func (u *user) DeleteUsers(ctx context.Context, request models.DeleteUsersRequest) error {
-
 	return u.factory.User().DeleteUsers(ctx, request)
+}
+
+func (u *user) Update(ctx context.Context, id uint, user *models.User) error {
+	return u.factory.User().Update(ctx, id, user)
 }

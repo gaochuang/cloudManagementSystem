@@ -15,6 +15,7 @@ type UsersInterface interface {
 	ChangePassword(ctx context.Context, name string, oldPassword string, newPassword string) error
 	GetUsers(ctx context.Context) (userList []*models.UsersListResponse, err error)
 	DeleteUsers(ctx context.Context, request models.DeleteUsersRequest) error
+	Update(ctx context.Context, id uint, user *models.User) error
 }
 
 type user struct {
@@ -87,4 +88,8 @@ func (u *user) DeleteUsers(ctx context.Context, request models.DeleteUsersReques
 		return err
 	}
 	return u.db.Where("id in ?", request.Ids).Delete(&models.User{}).Error
+}
+
+func (u *user) Update(ctx context.Context, id uint, user *models.User) error {
+	return u.db.Model(&models.User{}).Where("id = ?", id).Updates(&user).Error
 }
