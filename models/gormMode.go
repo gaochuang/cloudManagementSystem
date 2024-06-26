@@ -54,19 +54,19 @@ func (t *LocalTime) Value() (driver.Value, error) {
 	return t.Time, nil
 }
 
-func (t *LocalTime) Scan(v interface{}) error {
+func (t LocalTime) Scan(v interface{}) error {
 	value, ok := v.(time.Time)
 	if ok {
-		*t = LocalTime{Time: value}
+		t = LocalTime{Time: value}
 		return nil
 	}
 	return fmt.Errorf("can not convert %v to LocalTime", v)
 }
 
-func (t *LocalTime) String() string {
+func (t LocalTime) String() string {
 	return t.Format(SecLocalTimeFormat)
 }
 
-func (t *LocalTime) DateString() string {
+func (t LocalTime) DateString() string {
 	return t.Format(DateLocalTimeFormat)
 }
