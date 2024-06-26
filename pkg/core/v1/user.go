@@ -59,7 +59,7 @@ func (u *user) Create(ctx context.Context, user *models.User) (userData *models.
 	}
 	user.Password = string(hashPassword)
 	if userData, err = u.factory.User().Create(ctx, user); err != nil {
-		log.Logger.LogDebugWithCtx(ctx, "user register failed", zap.String("user name", user.UserName), zap.Error(err))
+		log.Logger.LogErrorWithCtx(ctx, "user register failed", zap.String("user name", user.UserName), zap.Error(err))
 		return nil, err
 	}
 	return userData, nil

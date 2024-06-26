@@ -45,7 +45,6 @@ func (u *user) Create(ctx context.Context, user *models.User) (us *models.User, 
 	if !errors.Is(u.db.Where("username = ? ", user.UserName).First(&us).Error, gorm.ErrRecordNotFound) {
 		return us, errors.New(fmt.Sprintf("user %v already exists", user.UserName))
 	}
-
 	err = u.db.Create(&user).Error
 	return us, err
 }
@@ -65,8 +64,6 @@ func (u *user) ChangePassword(ctx context.Context, name string, oldPassword stri
 	if err := bcrypt.CompareHashAndPassword([]byte(us.Password), []byte(oldPassword)); err != nil {
 		return errors.New("old password is incorrect")
 	}
-
-	fmt.Println("____us.Password__: ", us.Password)
 
 	password, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {

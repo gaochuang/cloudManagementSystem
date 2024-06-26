@@ -8,6 +8,7 @@ import (
 
 type CoreV1Interface interface {
 	UserGetter
+	SystemSettingGetter
 }
 
 type platform struct {
@@ -25,4 +26,8 @@ func New(config config.Config, factory database.ShareFactory) CoreV1Interface {
 
 func (p *platform) User() UsersInterface {
 	return newUser(p)
+}
+
+func (p *platform) SystemSetting() SystemsInterface {
+	return newSystemSetting(p)
 }
