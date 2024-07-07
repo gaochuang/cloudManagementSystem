@@ -12,6 +12,8 @@ func MySqlTables(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		models.User{},
 		models.Cluster{},
+		models.SystemSettings{},
+		models.Role{},
 	)
 	if err != nil {
 		log.Logger.LogError("create database tablse failed", zap.Any("err: ", err))
