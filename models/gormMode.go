@@ -41,12 +41,12 @@ func (t *LocalTime) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
-func (t *LocalTime) MarshalJSON() ([]byte, error) {
+func (t LocalTime) MarshalJSON() ([]byte, error) {
 	output := fmt.Sprintf("\"%s\"", t.Format(SecLocalTimeFormat))
 	return []byte(output), nil
 }
 
-func (t *LocalTime) Value() (driver.Value, error) {
+func (t LocalTime) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	if t.UnixNano() == zeroTime.UnixNano() {
 		return nil, nil
@@ -54,10 +54,10 @@ func (t *LocalTime) Value() (driver.Value, error) {
 	return t.Time, nil
 }
 
-func (t LocalTime) Scan(v interface{}) error {
+func (t *LocalTime) Scan(v interface{}) error {
 	value, ok := v.(time.Time)
 	if ok {
-		t = LocalTime{Time: value}
+		*t = LocalTime{Time: value}
 		return nil
 	}
 	return fmt.Errorf("can not convert %v to LocalTime", v)

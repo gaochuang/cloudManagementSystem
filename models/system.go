@@ -14,5 +14,5 @@ type SystemSafeSettingsRequest struct {
 }
 
 func (system SystemSettings) TableName() string {
-	return system.Mode.TableName("system_settings")
+	return system.Mode.TableName("system")
 }

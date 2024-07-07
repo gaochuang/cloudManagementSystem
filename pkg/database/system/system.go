@@ -24,12 +24,12 @@ func NewSystem(db *gorm.DB) SystemsSettingInterface {
 }
 func (s *systemSetting) GetSystemSafeSettings(ctx context.Context) (*models.SystemSettings, error) {
 	systemSetting := &models.SystemSettings{}
-	err := s.db.Model(systemSetting).Error
+	err := s.db.First(systemSetting).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("failed to get system safe setting")
+		return nil, fmt.Errorf("failed to get system safe setting: %v", err)
 	}
 	return systemSetting, nil
 }

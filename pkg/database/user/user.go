@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/models"
-	"github.com/gaochuang/cloudManagementSystem/pkg/log"
-	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -47,10 +45,7 @@ func (u *user) Create(ctx context.Context, user *models.User) (us *models.User, 
 	if !errors.Is(u.db.Where("username = ? ", user.UserName).First(&us).Error, gorm.ErrRecordNotFound) {
 		return us, errors.New(fmt.Sprintf("user %v already exists", user.UserName))
 	}
-
-	log.Logger.LogWarn("###user: ", zap.Any("user:", user))
 	err = u.db.Create(&user).Error
-	log.Logger.LogWarn("###error: ", zap.Error(err))
 	return us, err
 }
 
