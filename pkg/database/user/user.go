@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gaochuang/cloudManagementSystem/models"
+	"github.com/gaochuang/cloudManagementSystem/pkg/log"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -46,7 +48,9 @@ func (u *user) Create(ctx context.Context, user *models.User) (us *models.User, 
 		return us, errors.New(fmt.Sprintf("user %v already exists", user.UserName))
 	}
 
+	log.Logger.LogWarn("###user: ", zap.Any("user:", user))
 	err = u.db.Create(&user).Error
+	log.Logger.LogWarn("###error: ", zap.Error(err))
 	return us, err
 }
 
@@ -65,8 +69,6 @@ func (u *user) ChangePassword(ctx context.Context, name string, oldPassword stri
 	if err := bcrypt.CompareHashAndPassword([]byte(us.Password), []byte(oldPassword)); err != nil {
 		return errors.New("old password is incorrect")
 	}
-
-	fmt.Println("____us.Password__: ", us.Password)
 
 	password, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {

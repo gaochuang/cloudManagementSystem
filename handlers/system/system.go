@@ -26,7 +26,6 @@ func SetSystemSafe(ctx *gin.Context) {
 }
 
 func GetSystemSafe(ctx *gin.Context) {
-
 	settings, err := cms.CoreV1.SystemSetting().GetSystemSafeSettings(ctx.Request.Context())
 	if err != nil {
 		response.FailWithMessage(response.ERROR, err.Error(), ctx)

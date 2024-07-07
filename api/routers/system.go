@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitSystem(engine gin.Engine) {
+func InitSystem(engine *gin.Engine) {
 	systemRouter := engine.Group("/api/v1/system")
 	{
 		systemRouter.POST("safe/settings", system.SetSystemSafe)
