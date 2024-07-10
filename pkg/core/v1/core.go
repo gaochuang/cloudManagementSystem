@@ -9,6 +9,7 @@ import (
 type CoreV1Interface interface {
 	UserGetter
 	SystemSettingGetter
+	RoleGetter
 }
 
 type platform struct {
@@ -30,4 +31,8 @@ func (p *platform) User() UsersInterface {
 
 func (p *platform) SystemSetting() SystemsInterface {
 	return newSystemSetting(p)
+}
+
+func (p *platform) Role() RoleInterface {
+	return newRole(p)
 }
