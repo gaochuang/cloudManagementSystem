@@ -1,5 +1,11 @@
 package models
 
+type CreateRoleRequest struct {
+	Name string `json:"name" binding:"required"`
+	Desc string `json:"desc"`
+	Code string `json:"code" binding:"required"`
+}
+
 type Role struct {
 	Mode
 	Name         string           `gorm:"column:name;comment:'role name';size:256" json:"name"`

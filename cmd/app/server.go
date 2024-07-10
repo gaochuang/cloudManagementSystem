@@ -59,4 +59,5 @@ func initRouters(opt *options.Options) {
 	middleware.InitMiddlewares(opt.GinEngine)
 	routers.InitUserRouter(opt.GinEngine)
 	routers.InitSystem(opt.GinEngine)
+	routers.InitRoleRouter(opt.GinEngine)
 }
